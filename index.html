@@ -30,10 +30,12 @@
             border-bottom: 1px solid #3a3a3c;
             width: 100%;
             max-width: 600px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding-bottom: 10px;
             margin-bottom: 20px;
-            position: relative; /* Adicionado para posicionar a interrogação */
+            position: relative; /* Para o botão de interrogação ficar no canto */
         }
 
         h1 {
@@ -43,34 +45,28 @@
             text-transform: uppercase;
         }
 
-        /* Botão de interrogação de dica */
+        /* BOTÃO DE DICA (FOTO) */
         .help-btn {
             position: absolute;
             right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
             background: none;
-            border: none;
+            border: 2px solid #787c7e;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
             color: #787c7e;
-            font-size: 1.8rem;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, color 0.2s;
         }
 
         .help-btn:hover {
+            border-color: #ffffff;
             color: #ffffff;
-        }
-
-        .logo-container {
-            margin-bottom: 20px;
-        }
-
-        .logo-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid #3a3a3c;
         }
 
         .container {
@@ -127,7 +123,7 @@
             border-color: #b59f3b;
         }
 
-        /* Nova cor azul para caracteres repetidos na sequência */
+        /* COR AZUL PARA REPETIDOS */
         .tile.repeated {
             background-color: #2d7dd2;
             border-color: #2d7dd2;
@@ -167,7 +163,8 @@
             cursor: pointer;
             width: 100%;
             max-width: 380px;
-            margin: 0 auto 20px auto; /* Ajustado para alinhar perfeitamente ao centro */
+            margin: 0 auto 20px auto; /* ALINHAMENTO ARRUMADO AQUI */
+            display: block;
             transition: background-color 0.2s;
         }
 
@@ -208,7 +205,7 @@
 
         .key.correct { background-color: #538d4e !important; }
         .key.present { background-color: #b59f3b !important; }
-        .key.repeated { background-color: #2d7dd2 !important; }
+        .key.repeated { background-color: #2d7dd2 !important; } /* AZUL NO TECLADO */
         .key.absent { 
             background-color: #3a3a3c !important; 
             opacity: 0.3;
@@ -265,12 +262,8 @@
 
     <header>
         <h1>Termo de Números</h1>
-        <button class="help-btn" onclick="mostrarDica()">❓</button>
+        <button class="help-btn" onclick="mostrarDica()">?</button>
     </header>
-
-    <div class="logo-container">
-        <img src="logo.jpg" alt="Logo Termo de Números" class="logo-img" onerror="this.style.display='none'">
-    </div>
 
     <div class="container">
         <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
@@ -280,7 +273,7 @@
         <div class="display-container" id="display-palpite">__________</div>
 
         <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
-        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e; margin: 0 auto 20px auto;">Jogar Novamente</button>
+        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
 
         <div id="message"></div>
 
@@ -337,7 +330,6 @@
                 keyboard.appendChild(key);
             });
 
-            // Botão de apagar ocupando espaço duplo para alinhar o grid
             const backspaceKey = document.createElement('button');
             backspaceKey.className = 'key action';
             backspaceKey.innerText = "⌫";
@@ -391,13 +383,13 @@
             let vetorSegredo = [...sequenciaFinal];
             let resultadoLinha = Array(10).fill("absent");
 
-            // Conta a frequência de cada caractere no segredo para controle do azul (repetidos)
+            // CONTAGEM PARA SABER SE É REPETIDO (AZUL)
             let contagemSegredo = {};
             sequenciaFinal.forEach(char => {
                 contagemSegredo[char] = (contagemSegredo[char] || 0) + 1;
             });
 
-            // 1ª Passada: Verdes (Correct)
+            // 1ª Passada: Verdes
             for (let i = 0; i < 10; i++) {
                 if (vetorPlayer[i] === sequenciaFinal[i]) {
                     resultadoLinha[i] = "correct";
@@ -405,16 +397,15 @@
                 }
             }
 
-            // 2ª Passada: Amarelos (Present) e Azuis (Repeated)
+            // 2ª Passada: Amarelos e Azuis
             for (let i = 0; i < 10; i++) {
                 if (resultadoLinha[i] !== "correct") {
                     let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
                     if (indexNoSegredo !== -1) {
-                        // Se o caractere aparece mais de uma vez no segredo total, pinta de azul (repetido)
                         if (contagemSegredo[vetorPlayer[i]] > 1) {
-                            resultadoLinha[i] = "repeated";
+                            resultadoLinha[i] = "repeated"; // AZUL
                         } else {
-                            resultadoLinha[i] = "present";
+                            resultadoLinha[i] = "present"; // AMARELO
                         }
                         vetorSegredo[indexNoSegredo] = null;
                     }
@@ -468,15 +459,14 @@
         }
 
         function mostrarDica() {
-            // Conta quantos caracteres estão repetidos no código secreto atual
             let contagem = {};
             sequenciaFinal.forEach(char => { contagem[char] = (contagem[char] || 0) + 1; });
-            let repetidos = Object.values(contagem).filter(qtd => qtd > 1).length;
+            let temRepetidos = Object.values(contagem).some(qtd => qtd > 1);
 
-            if (repetidos > 0) {
-                alert(`💡 Dica: Existem caracteres que se repetem na sequência secreta! Procure pelos blocos azuis.`);
+            if (temRepetidos) {
+                alert(`💡 Dica: Existem caracteres que se repetem na sequência secreta! Fique de olho na cor azul.`);
             } else {
-                alert(`💡 Dica: Todos os caracteres na sequência secreta são distintos (não há repetições)!`);
+                alert(`💡 Dica: Todos os caracteres na sequência secreta são únicos!`);
             }
         }
 
