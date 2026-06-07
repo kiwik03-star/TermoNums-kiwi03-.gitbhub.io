@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termo de Números</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121213;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            border-bottom: 1px solid #3a3a3c;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #1e1e1f;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #b5b5b6;
+        }
+
+        .game-input-section {
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            background-color: #121213;
+            border: 2px solid #3a3a3c;
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+            padding: 10px;
+            width: 160px;
+            border-radius: 5px;
+            letter-spacing: 5px;
+            font-weight: bold;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #56a556;
+        }
+
+        button {
+            background-color: #538d4e;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #6aaa64;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            min-height: 30px;
+        }
+
+        .success {
+            color: #538d4e;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        .history {
+            margin-top: 25px;
+            border-top: 1px solid #3a3a3c;
+            padding-top: 20px;
+            max-height: 160px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .history h3, .social-section h3 {
+            font-size: 0.9rem;
+            color: #818384;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .history-item {
+            background-color: #272729;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .reset-btn {
+            background-color: #787c7e;
+            margin-top: 10px;
+        }
+        .reset-btn:hover {
+            background-color: #939799;
+        }
+
+        .social-section {
+            margin-top: 25px;
+            border-top: 1px solid #3a3a3c;
+            padding-top: 20px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .share-btn {
+            background-color: #3a3a3c;
+            margin-top: 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .share-btn:hover {
+            background-color: #4a4a4c;
+        }
+
+        .insta-btn {
+            background-color: #b63b7e;
+            margin-top: 0;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .insta-btn:hover {
+            background-color: #c94990;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Termo de Números</h1>
+    </header>
+
+    <div class="container">
+        <div class="stats">
+            Tentativas falhas: <span id="tentativas-count">0</span>
+        </div>
+
+        <div class="game-input-section">
+            <input type="text" id="player-guess" maxlength="4" placeholder="0000" autocomplete="off">
+            <button id="btn-enviar" onclick="verificarPalpite()">Enviar Palpite</button>
+        </div>
+
+        <div id="message"></div>
+
+        <button id="btn-reiniciar" class="reset-btn" onclick="reiniciarJogo()" style="display: none;">Jogar Novamente</button>
+
+        <div class="history">
+            <h3>Histórico de Tentativas</h3>
+            <div id="history-list"></div>
+        </div>
+
+        <div class="social-section">
+            <h3>Compartilhe & Siga</h3>
+            <div class="social-buttons">
+                <button class="share-btn" onclick="copiarLink()">🔗 Copiar Link</button>
+                <a class="insta-btn" href="https://www.instagram.com/arthur_motaik/" target="_blank">📸 @arthur_motaik</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let numFinal = [];
+        let tentativas = 0;
+        let jogoAtivo = true;
+
+        function gerarNumeroSecreto() {
+            numFinal = [];
+            for (let i = 0; i < 4; i++) {
+                numFinal.push(Math.floor(Math.random() * 10));
+            }
+            console.log("Número secreto:", numFinal.join(""));
+        }
+
+        function verificarPalpite() {
+            if (!jogoAtivo) return;
+
+            const inputElement = document.getElementById('player-guess');
+            const guessStr = inputElement.value;
+            const messageElement = document.getElementById('message');
+            const historyList = document.getElementById('history-list');
+
+            if (guessStr.length !== 4 || isNaN(guessStr)) {
+                messageElement.className = "error";
+                messageElement.innerText = "NUM INVÁLIDO! Digite exatamente 4 números.";
+                return;
+            }
+
+            messageElement.innerText = "";
+            let vetorPlayer = guessStr.split('').map(Number);
+            let acertosNoLugar = 0;
+
+            for (let i = 0; i < 4; i++) {
+                if (vetorPlayer[i] === numFinal[i]) {
+                    acertosNoLugar++;
+                }
+            }
+
+            if (acertosNoLugar === 4) {
+                messageElement.className = "success";
+                messageElement.innerHTML = `🎉 Parabéns! Você acertou!<br>Era exatamente [${numFinal.join('')}], com um total de ${tentativas} tentativas falhas.`;
+                jogoAtivo = false;
+                document.getElementById('btn-reiniciar').style.display = "block";
+                document.getElementById('btn-enviar').style.display = "none";
+                inputElement.disabled = true;
+            } else {
+                tentativas++;
+                document.getElementById('tentativas-count').innerText = tentativas;
+
+                messageElement.className = "error";
+                messageElement.innerText = `Você errou! Acertou [${acertosNoLugar}] número(s) no lugar certo.`;
+
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `<span>Palpite: <strong>${guessStr}</strong></span> <span>🎯 Certos: ${acertosNoLugar}/4</span>`;
+                historyList.insertBefore(item, historyList.firstChild);
+            }
+
+            inputElement.value = "";
+            inputElement.focus();
+        }
+
+        function reiniciarJogo() {
+            tentativas = 0;
+            jogoAtivo = true;
+            document.getElementById('tentativas-count').innerText = "0";
+            document.getElementById('message').innerText = "";
+            document.getElementById('history-list').innerHTML = "";
+            document.getElementById('btn-reiniciar').style.display = "none";
+            document.getElementById('btn-enviar').style.display = "block";
+
+            const inputElement = document.getElementById('player-guess');
+            inputElement.disabled = false;
+            inputElement.value = "";
+            inputElement.focus();
+
+            gerarNumeroSecreto();
+        }
+
+        function copiarLink() {
+            const linkAtual = window.location.href;
+            navigator.clipboard.writeText(linkAtual).then(() => {
+                alert("Link do jogo copiado para a área de transferência! Envie para seus amigos.");
+            }).catch(err => {
+                console.error("Erro ao copiar o link: ", err);
+            });
+        }
+
+        document.getElementById('player-guess').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verificarPalpite();
+            }
+        });
+
+        window.onload = gerarNumeroSecreto;
+    </script>
+</body>
+</html>
