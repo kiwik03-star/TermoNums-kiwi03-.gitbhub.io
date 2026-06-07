@@ -3,242 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termo de Números - Edição Math Pro</title>
-    
-    <link rel="icon" type="image/jpeg" href="logo.jpg?v=1">
-
+    <title>Termo de Números</title>
+    <link rel="shortcut icon" href="logo.jpg" type="image/x-icon">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --cor-correto: #3aa394;
+            --cor-lugar-errado: #d3ad47;
+            --cor-errado: #312a2c;
+            --cor-repetido-azul: #4a90e2;
+            --cor-fundo: #121214;
+            --cor-paineis: #1e1e24;
         }
 
         body {
-            background-color: #121213;
+            background-color: var(--cor-fundo);
             color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            margin: 0;
             padding: 20px;
-            position: relative;
-        }
-
-        header {
-            border-bottom: 1px solid #3a3a3c;
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
+            box-sizing: border-box;
         }
 
         h1 {
-            font-size: 2.3rem;
-            font-weight: 700;
-            letter-spacing: 2px;
             text-transform: uppercase;
-        }
-
-        .container {
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--cor-paineis);
+            padding-bottom: 10px;
             width: 100%;
-            max-width: 580px;
-            background-color: #1e1e1f;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            max-width: 500px;
             text-align: center;
         }
 
-        .stats {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #b59f3b;
-        }
-
-        /* TABULEIRO DE PALPITES */
-        .board {
+        .game-container {
+            background-color: var(--cor-paineis);
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-bottom: 20px;
             align-items: center;
         }
 
-        .board-row {
-            display: flex;
-            gap: 5px;
+        .tentativas-info {
+            color: #d3ad47;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
-        .tile {
-            width: 38px;
-            height: 38px;
-            border: 2px solid #3a3a3c;
+        .grid {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            border: 2px solid #45454d;
             border-radius: 4px;
-            font-size: 1.2rem;
-            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            user-select: none;
-            transition: background-color 0.3s, border-color 0.3s;
-            text-transform: none;
-        }
-
-        /* CORES DOS QUADRADOS E SISTEMA REPETIDO (AZUL) */
-        .tile.correct {
-            background-color: #538d4e;
-            border-color: #538d4e;
-        }
-
-        .tile.present {
-            background-color: #b59f3b;
-            border-color: #b59f3b;
-        }
-
-        .tile.repeated {
-            background-color: #2b70c9;
-            border-color: #2b70c9;
-        }
-
-        .tile.absent {
-            background-color: #3a3a3c;
-            border-color: #3a3a3c;
-            color: #787c7e;
-        }
-
-        /* VISUAL DA LINHA DE ENTRADA CENTRAL */
-        .display-container {
-            background-color: #121213;
-            border: 2px solid #3a3a3c;
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            letter-spacing: 4px;
-            width: 100%;
-            max-width: 380px;
-            margin: 0 auto 15px auto;
-            text-align: center;
-            color: #ffffff;
-            min-height: 55px;
+            text-transform: uppercase;
+            background-color: transparent;
+            transition: all 0.3s ease;
         }
 
-        .btn-main {
+        .cell.correct { background-color: var(--cor-correto); border-color: var(--cor-correto); }
+        .cell.present { background-color: var(--cor-lugar-errado); border-color: var(--cor-lugar-errado); }
+        .cell.absent { background-color: var(--cor-errado); border-color: var(--cor-errado); }
+        .cell.repeated { background-color: var(--cor-repetido-azul); border-color: var(--cor-repetido-azul); }
+
+        .input-display {
+            font-size: 2rem;
+            letter-spacing: 8px;
+            background: #121214;
+            border: 2px solid #45454d;
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 120px;
+            font-weight: bold;
+        }
+
+        .btn-enviar {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 14px 20px;
-            font-size: 1.2rem;
+            padding: 12px 24px;
+            font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             width: 100%;
-            max-width: 380px;
-            margin: 0 auto 20px auto;
-            display: block;
-            transition: background-color 0.2s;
+            max-width: 280px;
+            margin-bottom: 20px;
+            transition: background 0.2s;
         }
 
-        .btn-main:hover {
-            background-color: #6aaa64;
-        }
+        .btn-enviar:hover { background-color: #6ac060; }
 
-        /* TECLADO VIRTUAL */
-        .keyboard {
+        .teclado {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 6px;
-            margin-top: 15px;
-            background-color: #121213;
-            padding: 12px;
-            border-radius: 6px;
+            width: 100%;
+            max-width: 320px;
         }
 
-        .key {
+        .tecla {
             background-color: #787c7e;
             color: white;
             border: none;
+            padding: 15px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
             border-radius: 4px;
-            height: 45px;
-            font-size: 1.1rem;
-            font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s, opacity 0.2s;
+            user-select: none;
         }
 
-        .key.action {
-            background-color: #3a3a3c;
-            grid-column: span 2;
-        }
+        .tecla:active { background-color: #555; }
+        .tecla.apagar { grid-column: span 1; background-color: #aa3d3d; }
 
-        .key.correct { background-color: #538d4e !important; }
-        .key.present { background-color: #b59f3b !important; }
-        .key.repeated { background-color: #2b70c9 !important; }
-        .key.absent { 
-            background-color: #3a3a3c !important; 
-            opacity: 0.4;
-        }
-
-        #message {
-            margin: 15px 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            min-height: 25px;
-        }
-
-        .success { color: #538d4e; }
-        .error { color: #e74c3c; }
-
-        .social-section {
-            margin-top: 20px;
-            border-top: 1px solid #3a3a3c;
-            padding-top: 15px;
-        }
-
-        .social-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .share-btn {
-            background-color: #3a3a3c;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-        }
-
-        .insta-btn {
-            background-color: #b63b7e;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        /* BOTÃO DE INTERROGAÇÃO NO CANTO INFERIOR ESQUERDO */
-        .help-trigger {
+        /* Estilos do Botão de Tutorial (?) e Modal */
+        .help-btn {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            background-color: #3a3a3c;
-            color: #ffffff;
-            border: 2px solid #565758;
+            right: 20px;
+            background-color: #312a2c;
+            border: 2px solid #45454d;
+            color: white;
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -248,379 +162,220 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: background-color 0.2s;
-            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .help-trigger:hover {
-            background-color: #4c4d4f;
-        }
-
-        /* JANELA MODAL DE AJUDA COMO JOGAR */
-        .modal-overlay {
+        .modal {
+            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: flex;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease-in-out;
             z-index: 1000;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
         .modal-content {
-            background-color: #1e1e1f;
-            border: 1px solid #3a3a3c;
-            border-radius: 8px;
+            background-color: var(--cor-paineis);
             padding: 25px;
-            max-width: 460px;
+            border-radius: 8px;
+            max-width: 400px;
             width: 90%;
-            color: #ffffff;
-            text-align: left;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        .modal-content h2 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #aaa;
         }
 
-        .modal-content p {
-            font-size: 0.95rem;
-            line-height: 1.4;
-            margin-bottom: 12px;
-            color: #dfdfdf;
-        }
-
-        .example-row {
+        .exemplo-item {
             display: flex;
-            gap: 5px;
-            margin: 10px 0 15px 0;
+            align-items: center;
+            margin: 10px 0;
         }
 
-        .ex-tile {
-            width: 32px;
-            height: 32px;
-            border: 2px solid #3a3a3c;
+        .exemplo-box {
+            width: 30px; height: 30px;
+            margin-right: 15px;
             border-radius: 4px;
-            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-        }
-
-        .close-modal-btn {
-            background-color: #538d4e;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 1rem;
             font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .close-modal-btn:hover {
-            background-color: #6aaa64;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Termo de Números</h1>
-    </header>
+    <h1>Termo de Números</h1>
 
-    <div class="container">
-        <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
-
-        <div class="board" id="game-board"></div>
-
-        <div class="display-container" id="display-palpite">__________</div>
-
-        <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
-        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
-
-        <div id="message"></div>
-
-        <div class="keyboard" id="numeric-keyboard"></div>
-
-        <div class="social-section">
-            <div class="social-buttons">
-                <button class="share-btn" onclick="copyingLink()">🔗 Copiar Link</button>
-                <a class="insta-btn" href="https://www.instagram.com/arthur_motaik/" target="_blank">📸 @arthur_motaik</a>
+    <div class="game-container">
+        <div class="tentativas-info">Tentativas falhas: <span id="contador-falhas">0</span>/6</div>
+        
+        <div class="grid" id="grid-jogo">
             </div>
+
+        <div class="input-display" id="display-palpite">0000</div>
+        <button class="btn-enviar" onclick="enviarPalpite()">Enviar Palpite</button>
+
+        <div class="teclado">
+            <button class="tecla" onclick="digitar(1)">1</button>
+            <button class="tecla" onclick="digitar(2)">2</button>
+            <button class="tecla" onclick="digitar(3)">3</button>
+            <button class="tecla" onclick="digitar(4)">4</button>
+            <button class="tecla" onclick="digitar(5)">5</button>
+            <button class="tecla" onclick="digitar(6)">6</button>
+            <button class="tecla" onclick="digitar(7)">7</button>
+            <button class="tecla" onclick="digitar(8)">8</button>
+            <button class="tecla" onclick="digitar(9)">9</button>
+            <button class="tecla apagar" onclick="apagar()">⌫</button>
+            <button class="tecla" onclick="digitar(0)" style="grid-column: span 5;">0</button>
         </div>
     </div>
 
-    <button class="help-trigger" onclick="abrirAjuda()">?</button>
+    <button class="help-btn" onclick="abrirModal()">?</button>
 
-    <div class="modal-overlay" id="help-modal" onclick="fecharAjudaExterno(event)">
+    <div class="modal" id="modal-tutorial">
         <div class="modal-content">
-            <h2>Como Jogar</h2>
-            <p>Descubra o código matemático secreto de <strong>10 dígitos</strong> em até 8 tentativas.</p>
-            <p>A cada palpite enviado, as cores dos blocos mostram o quão perto você está do resultado:</p>
-            
-            <hr style="border-color: #3a3a3c; margin: 10px 0;">
-
-            <div class="example-row">
-                <div class="ex-tile" style="background-color: #538d4e; border-color: #538d4e;">π</div>
-                <p style="margin: 5px 0 0 10px;">O caractere faz parte do segredo e está na <strong>posição correta</strong>.</p>
+            <span class="close-btn" onclick="fecharModal()">&times;</span>
+            <h2>Como Jogar?</h2>
+            <p>Descubra o código secreto de 4 dígitos em 6 tentativas.</p>
+            <hr style="border-color: #45454d;">
+            <div class="exemplo-item">
+                <div class="exemplo-box" style="background-color: var(--cor-correto);">7</div>
+                <span>O número está na posição **correta**.</span>
             </div>
-
-            <div class="example-row">
-                <div class="ex-tile" style="background-color: #b59f3b; border-color: #b59f3b;">8</div>
-                <p style="margin: 5px 0 0 10px;">O caractere está na senha, mas na <strong>posição incorreta</strong>.</p>
+            <div class="exemplo-item">
+                <div class="exemplo-box" style="background-color: var(--cor-lugar-errado);">3</div>
+                <span>O número faz parte, mas na posição **errada**.</span>
             </div>
-
-            <div class="example-row">
-                <div class="ex-tile" style="background-color: #2b70c9; border-color: #2b70c9;">∫</div>
-                <p style="margin: 5px 0 0 10px;"><strong>Sinalizador Azul:</strong> Este caractere aparece <strong>duas ou mais vezes</strong> na sequência correta!</p>
+            <div class="exemplo-item">
+                <div class="exemplo-box" style="background-color: var(--cor-errado);">5</div>
+                <span>O número **não existe** no segredo.</span>
             </div>
-
-            <div class="example-row">
-                <div class="ex-tile" style="background-color: #3a3a3c; border-color: #3a3a3c; color: #787c7e;">4</div>
-                <p style="margin: 5px 0 0 10px;">O caractere <strong>não faz parte</strong> do segredo.</p>
+            <div class="exemplo-item">
+                <div class="exemplo-box" style="background-color: var(--cor-repetido-azul);">2</div>
+                <span>Número **Repetido**: Você digitou esse número mais vezes do que ele realmente aparece no segredo.</span>
             </div>
-
-            <button class="close-modal-btn" onclick="fecharAjuda()">Entendi!</button>
         </div>
     </div>
 
     <script>
-        let sequenciaFinal = [];
-        let palpiteAtual = "";
+        const segredo = "7232"; // Defina o número secreto aqui (exemplo com repetido)
         let tentativaAtual = 0;
-        const maxTentativas = 8; 
-        let jogoAtivo = true;
+        let palpiteAtual = "";
 
-        const alfabetoMatematico = [
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
-            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω",
-            "α", "β", "+", "-", "*", "/"
-        ];
+        // Inicializa a grade do jogo dinamicamente
+        const grid = document.getElementById("grid-jogo");
+        for (let i = 0; i < 6; i++) {
+            const row = document.createElement("div");
+            row.className = "row";
+            for (let j = 0; j < 4; j++) {
+                const cell = document.createElement("div");
+                cell.className = "cell";
+                cell.id = `c-${i}-${j}`;
+                row.appendChild(cell);
+            }
+            grid.appendChild(row);
+        }
 
-        function criarTabuleiro() {
-            const board = document.getElementById('game-board');
-            board.innerHTML = "";
-            for (let r = 0; r < maxTentativas; r++) {
-                const row = document.createElement('div');
-                row.className = 'board-row';
-                for (let c = 0; c < 10; c++) {
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.id = `tile-${r}-${c}`;
-                    row.appendChild(tile);
-                }
-                board.appendChild(row);
+        function atualizarDisplay() {
+            const display = document.getElementById("display-palpite");
+            display.innerText = palpiteAtual.padEnd(4, "0");
+        }
+
+        function digitar(num) {
+            if (palpiteAtual.length < 4) {
+                palpiteAtual += num;
+                atualizarDisplay();
             }
         }
 
-        function criarTeclado() {
-            const keyboard = document.getElementById('numeric-keyboard');
-            keyboard.innerHTML = "";
-            
-            alfabetoMatematico.forEach((item, index) => {
-                const key = document.createElement('button');
-                key.className = 'key';
-                key.innerText = item;
-                key.id = `key-math-${index}`;
-                key.onclick = () => digitarCaractere(item);
-                keyboard.appendChild(key);
-            });
-
-            const backspaceKey = document.createElement('button');
-            backspaceKey.className = 'key action';
-            backspaceKey.innerText = "⌫";
-            backspaceKey.onclick = apagarUltimo;
-            keyboard.appendChild(backspaceKey);
-        }
-
-        function gerarCodigoSecreto() {
-            sequenciaFinal = [];
-            for (let i = 0; i < 10; i++) {
-                const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
-                sequenciaFinal.push(caractereAleatorio);
+        function apagar() {
+            if (palpiteAtual.length > 0) {
+                palpiteAtual = palpiteAtual.slice(0, -1);
+                atualizarDisplay();
             }
-            console.log("Código Secreto:", sequenciaFinal.join(""));
         }
 
-        function digitarCaractere(char) {
-            if (!jogoAtivo || palpiteAtual.length >= 10) return;
-            palpiteAtual += char;
-            atualizarDisplayCentral();
-        }
-
-        function apagarUltimo() {
-            if (!jogoAtivo || palpiteAtual.length === 0) return;
-            palpiteAtual = palpiteAtual.slice(0, -1);
-            atualizarDisplayCentral();
-        }
-
-        function atualizarDisplayCentral() {
-            const display = document.getElementById('display-palpite');
-            let texto = palpiteAtual;
-            while (texto.length < 10) {
-                texto += "_";
-            }
-            display.innerText = texto;
-        }
-
-        function contarOcorrencias(array, item) {
-            return array.filter(x => x === item).length;
-        }
-
-        function verificarPalpite() {
-            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
-
-            const messageElement = document.getElementById('message');
-            const vetorPlayer = Array.from(palpiteAtual);
-
-            if (vetorPlayer.length !== 10) {
-                messageElement.className = "error";
-                messageElement.innerText = "Preencha as 10 casas antes de enviar!";
+        function enviarPalpite() {
+            if (palpiteAtual.length !== 4) {
+                alert("O palpite precisa ter exatamente 4 números!");
                 return;
             }
 
-            messageElement.innerText = "";
-            let vetorSegredo = [...sequenciaFinal];
-            let resultadoLinha = Array(10).fill("absent");
+            let segredoRestante = segredo.split("");
+            let statusPalpite = Array(4).fill("absent");
+            let contagemSegredo = {};
 
-            for (let i = 0; i < 10; i++) {
-                if (vetorPlayer[i] === sequenciaFinal[i]) {
-                    resultadoLinha[i] = "correct";
-                    vetorSegredo[i] = null; 
+            // Mapeia a frequência de cada número no segredo real
+            for (let n of segredo) {
+                contagemSegredo[n] = (contagemSegredo[n] || 0) + 1;
+            }
+
+            // 1º Passo: Verificar acertos exatos (Verde)
+            for (let i = 0; i < 4; i++) {
+                if (palpiteAtual[i] === segredo[i]) {
+                    statusPalpite[i] = "correct";
+                    contagemSegredo[palpiteAtual[i]]--;
                 }
             }
 
-            for (let i = 0; i < 10; i++) {
-                if (resultadoLinha[i] !== "correct") {
-                    let charAtual = vetorPlayer[i];
-                    let indexNoSegredo = vetorSegredo.indexOf(charAtual);
+            // 2º Passo: Verificar amarelos (presentes) e azuis (repetidos/excedentes)
+            for (let i = 0; i < 4; i++) {
+                if (statusPalpite[i] !== "correct") {
+                    let num = palpiteAtual[i];
                     
-                    if (indexNoSegredo !== -1) {
-                        let totalNoSegredo = contarOcorrencias(sequenciaFinal, charAtual);
-                        let totalNoPalpite = contarOcorrencias(vetorPlayer, charAtual);
-
-                        if (totalNoSegredo > 1 && totalNoPalpite < totalNoSegredo) {
-                            resultadoLinha[i] = "repeated"; 
+                    if (segredo.includes(num)) {
+                        if (contagemSegredo[num] > 0) {
+                            statusPalpite[i] = "present";
+                            contagemSegredo[num]--;
                         } else {
-                            resultadoLinha[i] = "present"; 
+                            // Se o número existe no segredo mas o usuário colocou vezes demais
+                            statusPalpite[i] = "repeated"; 
                         }
-                        vetorSegredo[indexNoSegredo] = null; 
+                    } else {
+                        statusPalpite[i] = "absent";
                     }
                 }
             }
 
-            for (let i = 0; i < 10; i++) {
-                const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
-                tile.innerText = vetorPlayer[i];
-                tile.className = `tile ${resultadoLinha[i]}`;
-
-                atualizarTecladoStatus(vetorPlayer[i], resultadoLinha[i]);
+            // Aplicar as cores na linha atual da grade
+            for (let i = 0; i < 4; i++) {
+                const cell = document.getElementById(`c-${tentativaAtual}-${i}`);
+                cell.innerText = palpiteAtual[i];
+                cell.classList.add(statusPalpite[i]);
             }
 
-            if (resultadoLinha.every(status => status === "correct")) {
-                messageElement.className = "success";
-                messageElement.innerText = `🎉 Genial! Você decifrou o enigma matemático!`;
-                finalizarJogo();
-            } else {
-                tentativaAtual++;
-                document.getElementById('tentativas-txt').innerText = `Tentativas falhas: ${tentativaAtual}`;
-                
-                if (tentativaAtual >= maxTentativas) {
-                    messageElement.className = "error";
-                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join('')}`;
-                    finalizarJogo();
-                }
+            if (palpiteAtual === segredo) {
+                alert("Parabéns! Você descobriu o número secreto! 🎉");
+                bloquearJogo();
+                return;
             }
 
+            tentativaAtual++;
+            document.getElementById("contador-falhas").innerText = tentativaAtual;
             palpiteAtual = "";
-            atualizarDisplayCentral();
-        }
+            atualizarDisplay();
 
-        function atualizarTecladoStatus(char, status) {
-            const idx = alfabetoMatematico.indexOf(char);
-            if (idx === -1) return;
-
-            const key = document.getElementById(`key-math-${idx}`);
-            if (!key) return;
-
-            if (status === "correct") {
-                key.className = "key correct";
-            } else if (status === "repeated" && !key.classList.contains("correct")) {
-                key.className = "key repeated";
-            } else if (status === "present" && !key.classList.contains("correct") && !key.classList.contains("repeated")) {
-                key.className = "key present";
-            } else if (status === "absent" && !key.classList.contains("correct") && !key.classList.contains("present") && !key.classList.contains("repeated")) {
-                key.className = "key absent";
+            if (tentativaAtual >= 6) {
+                alert(`Fim de jogo! O número secreto era: ${segredo}`);
+                bloquearJogo();
             }
         }
 
-        function finalizarJogo() {
-            jogoAtivo = false;
-            document.getElementById('btn-reiniciar').style.display = "block";
-            document.getElementById('btn-enviar').style.display = "none";
+        function bloquearJogo() {
+            document.querySelector(".btn-enviar").disabled = true;
         }
 
-        function reiniciarJogo() {
-            tentativaAtual = 0;
-            palpiteAtual = "";
-            jogoAtivo = true;
-            document.getElementById('message').innerText = "";
-            document.getElementById('tentativas-txt').innerText = "Tentativas falhas: 0";
-            document.getElementById('btn-reiniciar').style.display = "none";
-            document.getElementById('btn-enviar').style.display = "block";
-            
-            criarTabuleiro();
-            criarTeclado();
-            atualizarDisplayCentral();
-            gerarCodigoSecreto();
-        }
-
-        function copyingLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("Link copiado!");
-            });
-        }
-
-        function abrirAjuda() {
-            document.getElementById('help-modal').classList.add('active');
-        }
-
-        function fecharAjuda() {
-            document.getElementById('help-modal').classList.remove('active');
-        }
-
-        function fecharAjudaExterno(e) {
-            if (e.target.id === "help-modal") {
-                fecharAjuda();
-            }
-        }
-
-        window.onload = () => {
-            criarTabuleiro();
-            criarTeclado();
-            atualizarDisplayCentral();
-            gerarCodigoSecreto();
-        };
+        // Funções do Modal
+        function abrirModal() { document.getElementById("modal-tutorial").style.display = "flex"; }
+        function fecharModal() { document.getElementById("modal-tutorial").style.display = "none"; }
     </script>
 </body>
 </html>
