@@ -39,7 +39,7 @@
             text-transform: uppercase;
         }
 
-        /* Estilo para centralizar e ajustar o tamanho do logo */
+        /* Estilo para deixar a sua imagem bonita e redimensionada */
         .foto-jogo {
             max-width: 150px;
             height: auto;
@@ -207,7 +207,7 @@
         <h1>Termo de Números</h1>
     </header>
 
-    <img src="logo.jpg (1).png" alt="Logo Termo de Números" class="foto-jogo">
+    <img src="logo.jpg" alt="Logo Termo de Números" class="foto-jogo">
 
     <div class="container">
         <div class="stats">
@@ -315,10 +315,11 @@
             gerarNumeroSecreto();
         }
 
+        // Função corrigida para copiar o link do site
         function copiarLink() {
             const linkAtual = window.location.href;
             navigator.clipboard.writeText(linkAtual).then(() => {
-                alert("Link do jogo copiado para a área de transferência! Envie para seus amigos.");
+                alert("Link do jogo copiado! Envie para seus amigos.");
             }).catch(err => {
                 console.error("Erro ao copiar o link: ", err);
             });
