@@ -36,133 +36,158 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* Estilo da imagem centralizado e bem ajustado */
-        .foto-jogo {
-            max-width: 150px;
-            height: auto;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            display: block;
-        }
-
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             background-color: #1e1e1f;
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             text-align: center;
         }
 
-        .stats {
+        /* Grade de Linhas do Termo (6 tentativas) */
+        .board {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             margin-bottom: 20px;
-            font-size: 1.1rem;
-            color: #b5b5b6;
+            align-items: center;
         }
 
-        .game-input-section {
-            margin-bottom: 25px;
+        .board-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tile {
+            width: 52px;
+            height: 52px;
+            border: 2px solid #3a3a3c;
+            border-radius: 4px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Cores de feedback dos blocos */
+        .tile.correct {
+            background-color: #538d4e;
+            border-color: #538d4e;
+        }
+
+        .tile.present {
+            background-color: #b59f3b;
+            border-color: #b59f3b;
+        }
+
+        .tile.absent {
+            background-color: #3a3a3c;
+            border-color: #3a3a3c;
+            color: #787c7e;
+        }
+
+        /* Campo de Input Oculto e Botão de Enviar */
+        .input-container {
+            margin-bottom: 15px;
         }
 
         input[type="text"] {
             background-color: #121213;
             border: 2px solid #3a3a3c;
             color: white;
-            font-size: 2rem;
+            font-size: 1.5rem;
             text-align: center;
-            padding: 10px;
-            width: 160px;
+            padding: 8px;
+            width: 140px;
             border-radius: 5px;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             font-weight: bold;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         input[type="text"]:focus {
-            border-color: #56a556;
+            border-color: #538d4e;
         }
 
-        button {
+        .btn-main {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
+            padding: 10px 20px;
+            font-size: 1rem;
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.2s;
+            margin-top: 10px;
             width: 100%;
+            transition: background-color 0.2s;
         }
 
-        button:hover {
+        .btn-main:hover {
             background-color: #6aaa64;
         }
 
-        #message {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            min-height: 30px;
+        /* Teclado de Números do Lado/Baixo */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 15px;
+            background-color: #121213;
+            padding: 12px;
+            border-radius: 6px;
         }
 
-        .success {
-            color: #538d4e;
-        }
-
-        .error {
-            color: #e74c3c;
-        }
-
-        .history {
-            margin-top: 25px;
-            border-top: 1px solid #3a3a3c;
-            padding-top: 20px;
-            max-height: 160px;
-            overflow-y: auto;
-            text-align: left;
-        }
-
-        .history h3, .social-section h3 {
-            font-size: 0.9rem;
-            color: #818384;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .history-item {
-            background-color: #272729;
-            padding: 8px 12px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .reset-btn {
+        .key {
             background-color: #787c7e;
-            margin-top: 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            height: 45px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, opacity 0.2s;
         }
-        .reset-btn:hover {
-            background-color: #939799;
+
+        /* Estados do Teclado baseado nos erros */
+        .key.correct { background-color: #538d4e !important; }
+        .key.present { background-color: #b59f3b !important; }
+        .key.absent { 
+            background-color: #3a3a3c !important; 
+            opacity: 0.4; /* Leve transparência para indicar eliminação */
+            color: #787c7e;
         }
+
+        #message {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 25px;
+        }
+
+        .success { color: #538d4e; }
+        .error { color: #e74c3c; }
 
         .social-section {
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 1px solid #3a3a3c;
-            padding-top: 20px;
+            padding-top: 15px;
         }
 
         .social-buttons {
@@ -173,35 +198,25 @@
 
         .share-btn {
             background-color: #3a3a3c;
-            margin-top: 0;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .share-btn:hover {
-            background-color: #4a4a4c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
         }
 
         .insta-btn {
             background-color: #b63b7e;
-            margin-top: 0;
-            font-size: 0.95rem;
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
             color: white;
             font-weight: bold;
             border-radius: 5px;
             width: 100%;
-        }
-
-        .insta-btn:hover {
-            background-color: #c94990;
         }
     </style>
 </head>
@@ -211,29 +226,20 @@
         <h1>Termo de Números</h1>
     </header>
 
-    <img src="logo.jpg" alt="Logo Termo de Números" class="foto-jogo">
-
     <div class="container">
-        <div class="stats">
-            Tentativas falhas: <span id="tentativas-count">0</span>
-        </div>
+        <div class="board" id="game-board"></div>
 
-        <div class="game-input-section">
+        <div class="input-container" id="action-area">
             <input type="text" id="player-guess" maxlength="4" placeholder="0000" autocomplete="off">
-            <button id="btn-enviar" onclick="verificarPalpite()">Enviar Palpite</button>
+            <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
         </div>
 
         <div id="message"></div>
+        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
 
-        <button id="btn-reiniciar" class="reset-btn" onclick="reiniciarJogo()" style="display: none;">Jogar Novamente</button>
-
-        <div class="history">
-            <h3>Histórico de Tentativas</h3>
-            <div id="history-list"></div>
-        </div>
+        <div class="keyboard" id="numeric-keyboard"></div>
 
         <div class="social-section">
-            <h3>Compartilhe & Siga</h3>
             <div class="social-buttons">
                 <button class="share-btn" onclick="copiarLink()">🔗 Copiar Link</button>
                 <a class="insta-btn" href="https://www.instagram.com/arthur_motaik/" target="_blank">📸 @arthur_motaik</a>
@@ -243,98 +249,172 @@
 
     <script>
         let numFinal = [];
-        let tentativas = 0;
+        let tentativaAtual = 0;
+        const maxTentativas = 6;
         let jogoAtivo = true;
+
+        // Inicializa o layout da grade
+        function criarTabuleiro() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = "";
+            for (let r = 0; r < maxTentativas; r++) {
+                const row = document.createElement('div');
+                row.className = 'board-row';
+                for (let c = 0; c < 4; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${r}-${c}`;
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        // Inicializa o teclado de 0 a 9
+        function criarTeclado() {
+            const keyboard = document.getElementById('numeric-keyboard');
+            keyboard.innerHTML = "";
+            const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+            numeros.forEach(num => {
+                const key = document.createElement('button');
+                key.className = 'key';
+                key.innerText = num;
+                key.id = `key-${num}`;
+                key.onclick = () => {
+                    const input = document.getElementById('player-guess');
+                    if (input.value.length < 4 && jogoAtivo) {
+                        input.value += num;
+                    }
+                };
+                keyboard.appendChild(key);
+            });
+        }
 
         function gerarNumeroSecreto() {
             numFinal = [];
             for (let i = 0; i < 4; i++) {
                 numFinal.push(Math.floor(Math.random() * 10));
             }
-            console.log("Número secreto:", numFinal.join(""));
+            console.log("Segredo:", numFinal.join(""));
         }
 
         function verificarPalpite() {
-            if (!jogoAtivo) return;
+            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
 
             const inputElement = document.getElementById('player-guess');
             const guessStr = inputElement.value;
             const messageElement = document.getElementById('message');
-            const historyList = document.getElementById('history-list');
 
             if (guessStr.length !== 4 || isNaN(guessStr)) {
                 messageElement.className = "error";
-                messageElement.innerText = "NUM INVÁLIDO! Digite exatamente 4 números.";
+                messageElement.innerText = "Digite exatamente 4 números.";
                 return;
             }
 
             messageElement.innerText = "";
             let vetorPlayer = guessStr.split('').map(Number);
-            let acertosNoLugar = 0;
+            let copiaSegredo = [...numFinal];
+            let resultadoLinha = Array(4).fill("absent");
 
+            // Primeira passada: checa os Verdes (Corretos)
             for (let i = 0; i < 4; i++) {
                 if (vetorPlayer[i] === numFinal[i]) {
-                    acertosNoLugar++;
+                    resultadoLinha[i] = "correct";
+                    copiaSegredo[i] = null; 
                 }
             }
 
-            if (acertosNoLugar === 4) {
+            // Segunda passada: checa os Amarelos (Presentes)
+            for (let i = 0; i < 4; i++) {
+                if (resultadoLinha[i] !== "correct") {
+                    let indexNoSegredo = copiaSegredo.indexOf(vetorPlayer[i]);
+                    if (indexNoSegredo !== -1) {
+                        resultadoLinha[i] = "present";
+                        copiaSegredo[indexNoSegredo] = null;
+                    }
+                }
+            }
+
+            // Aplica a animação e cores nas caixas do tabuleiro
+            for (let i = 0; i < 4; i++) {
+                const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
+                tile.innerText = vetorPlayer[i];
+                tile.classList.add(resultadoLinha[i]);
+
+                // Atualiza o Teclado Dinâmico com transparência/cores
+                atualizarTeclado(vetorPlayer[i], resultadoLinha[i]);
+            }
+
+            // Verifica Vitória ou Fim de Jogo
+            if (resultadoLinha.every(status => status === "correct")) {
                 messageElement.className = "success";
-                messageElement.innerHTML = `🎉 Parabéns! Você acertou!<br>Era exatamente [${numFinal.join('')}], com um total de ${tentativas} tentativas falhas.`;
-                jogoAtivo = false;
-                document.getElementById('btn-reiniciar').style.display = "block";
-                document.getElementById('btn-enviar').style.display = "none";
-                inputElement.disabled = true;
+                messageElement.innerText = `🎉 Sensacional! Você acertou em ${tentativaAtual + 1} tentativas!`;
+                finalizarJogo();
             } else {
-                tentativas++;
-                document.getElementById('tentativas-count').innerText = tentativas;
-
-                messageElement.className = "error";
-                messageElement.innerText = `Você errou! Acertou [${acertosNoLugar}] número(s) no lugar certo.`;
-
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.innerHTML = `<span>Palpite: <strong>${guessStr}</strong></span> <span>🎯 Certos: ${acertosNoLugar}/4</span>`;
-                historyList.insertBefore(item, historyList.firstChild);
+                tentativaAtual++;
+                if (tentativaAtual >= maxTentativas) {
+                    messageElement.className = "error";
+                    messageElement.innerText = `💥 Fim de jogo! O número era ${numFinal.join('')}.`;
+                    finalizarJogo();
+                }
             }
 
             inputElement.value = "";
             inputElement.focus();
         }
 
+        function atualizarTeclado(num, status) {
+            const key = document.getElementById(`key-${num}`);
+            if (!key) return;
+
+            if (status === "correct") {
+                key.className = "key correct";
+            } else if (status === "present" && !key.classList.contains("correct")) {
+                key.className = "key present";
+            } else if (status === "absent" && !key.classList.contains("correct") && !key.classList.contains("present")) {
+                key.className = "key absent";
+            }
+        }
+
+        function finalizarJogo() {
+            jogoAtivo = false;
+            document.getElementById('btn-reiniciar').style.display = "block";
+            document.getElementById('btn-enviar').style.display = "none";
+            document.getElementById('player-guess').disabled = true;
+        }
+
         function reiniciarJogo() {
-            tentativas = 0;
+            tentativaAtual = 0;
             jogoAtivo = true;
-            document.getElementById('tentativas-count').innerText = "0";
             document.getElementById('message').innerText = "";
-            document.getElementById('history-list').innerHTML = "";
             document.getElementById('btn-reiniciar').style.display = "none";
             document.getElementById('btn-enviar').style.display = "block";
-
+            
             const inputElement = document.getElementById('player-guess');
             inputElement.disabled = false;
             inputElement.value = "";
             inputElement.focus();
 
+            criarTabuleiro();
+            criarTeclado();
             gerarNumeroSecreto();
         }
 
         function copiarLink() {
-            const linkAtual = window.location.href;
-            navigator.clipboard.writeText(linkAtual).then(() => {
-                alert("Link do jogo copiado! Envie para seus amigos.");
-            }).catch(err => {
-                console.error("Erro ao copiar o link: ", err);
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Link copiado! Envie para seus amigos.");
             });
         }
 
         document.getElementById('player-guess').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verificarPalpite();
-            }
+            if (e.key === 'Enter') verificarPalpite();
         });
 
-        window.onload = gerarNumeroSecreto;
+        window.onload = () => {
+            criarTabuleiro();
+            criarTeclado();
+            gerarNumeroSecreto();
+        };
     </script>
 </body>
 </html>
