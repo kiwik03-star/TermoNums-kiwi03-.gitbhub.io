@@ -1,1 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termo de Números - Edição Math Pro</title>
+    
+    <link rel="icon" type="image/jpeg" href="logo.jpg?v=1">
 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121213;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            border-bottom: 1px solid #3a3a3c;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #3a3a3c;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 580px;
+            background-color: #1e1e1f;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .stats {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #b59f3b;
+        }
+
+        /* HISTÓRICO DE PALPITES - AJUSTADO PARA 10 QUADRADOS */
+        .board {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .board-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .tile {
+            width: 38px;
+            height: 38px;
+            border: 2px solid #3a3a3c;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .tile.correct {
+            background-color: #538d4e;
+            border-color: #538d4e;
+        }
+
+        .tile.present {
+            background-color: #b59f3b;
+            border-color: #b59f3b;
+        }
+
+        .tile.absent {
+            background-color: #3a3a3c;
+            border-color: #3a3a3c;
+            color: #787c7e;
+        }
+
+        /* SEU CAMPO DE EXIBIÇÃO CENTRAL DO PRINT (Agora com 10 espaços fixos) */
+        .display-container {
+            background-color: #121213;
+            border: 2px solid #3a3a3c;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 15px auto;
+            text-align: center;
+            color: #ffffff;
+            min-height: 55px;
+        }
+
+        .btn-main {
+            background-color: #538d4e;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-main:hover {
+            background-color: #6aaa64;
+        }
+
+        /* TECLADO EXPANDIDO - EXATAMENTE 26 SÍMBOLOS MATEMÁTICOS */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin-top: 15px;
+            background-color: #121213;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .key {
+            background-color: #787c7e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            height: 45px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        .key.action {
+            background-color: #3a3a3c;
+            grid-column: span 2; /* Deixa o botão de apagar maior */
+        }
+
+        .key.correct { background-color: #538d4e !important; }
+        .key.present { background-color: #b59f3b !important; }
+        .key.absent { 
+            background-color: #3a3a3c !important; 
+            opacity: 0.3;
+            color: #787c7e;
+        }
+
+        #message {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-height: 25px;
+        }
+
+        .success { color: #538d4e; }
+        .error { color: #e74c3c; }
+
+        .social-section {
+            margin-top: 20px;
+            border-top: 1px solid #3a3a3c;
+            padding-top: 15px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .share-btn {
+            background-color: #3a3a3c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .insta-btn {
+            background-color: #b63b7e;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Termo de Números</h1>
+    </header>
+
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo Termo de Números" class="logo-img" onerror="this.style.display='none'">
+    </div>
+
+    <div class="container">
+        <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
+
+        <div class="board" id="game-board"></div>
+
+        <div class="display-container" id="display-palpite">__________</div>
+
+        <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
+        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
+
+        <div id="message"></div>
+
+        <div class="keyboard" id="numeric-keyboard"></div>
+
+        <div class="social-section">
+            <div class="social-buttons">
+                <button class="share-btn" onclick="copiarLink()">🔗 Copiar Link</button>
+                <a class="insta-btn" href="https://www.instagram.com/arthur_motaik/" target="_blank">📸 @arthur_motaik</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sequenciaFinal = [];
+        let palpiteAtual = "";
+        let tentativaAtual = 0;
+        const maxTentativas = 8; 
+        let jogoAtivo = true;
+
+        // O ALFABETO EXATO DE 26 CARACTERES MATEMÁTICOS COMPLEXOS
+        const alfabetoMatematico = [
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
+            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω",
+            "α", "β", "+", "-", "*", "/"
+        ];
+
+        function criarTabuleiro() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = "";
+            for (let r = 0; r < maxTentativas; r++) {
+                const row = document.createElement('div');
+                row.className = 'board-row';
+                for (let c = 0; c < 10; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${r}-${c}`;
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function criarTeclado() {
+            const keyboard = document.getElementById('numeric-keyboard');
+            keyboard.innerHTML = "";
+            
+            alfabetoMatematico.forEach((item, index) => {
+                const key = document.createElement('button');
+                key.className = 'key';
+                key.innerText = item;
+                key.id = `key-math-${index}`;
+                key.onclick = () => digitarCaractere(item);
+                keyboard.appendChild(key);
+            });
+
+            // Botão de apagar ocupando espaço duplo para alinhar o grid
+            const backspaceKey = document.createElement('button');
+            backspaceKey.className = 'key action';
+            backspaceKey.innerText = "⌫";
+            backspaceKey.onclick = apagarUltimo;
+            keyboard.appendChild(backspaceKey);
+        }
+
+        function gerarCodigoSecreto() {
+            sequenciaFinal = [];
+            for (let i = 0; i < 10; i++) {
+                const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
+                sequenciaFinal.push(caractereAleatorio);
+            }
+            console.log("Código Secreto:", sequenciaFinal.join(""));
+        }
+
+        function digitarCaractere(char) {
+            if (!jogoAtivo || palpiteAtual.length >= 10) return;
+            palpiteAtual += char;
+            atualizarDisplayCentral();
+        }
+
+        function apagarUltimo() {
+            if (!jogoAtivo || palpiteAtual.length === 0) return;
+            palpiteAtual = palpiteAtual.slice(0, -1);
+            atualizarDisplayCentral();
+        }
+
+        function atualizarDisplayCentral() {
+            const display = document.getElementById('display-palpite');
+            let texto = palpiteAtual;
+            while (texto.length < 10) {
+                texto += "_";
+            }
+            display.innerText = texto;
+        }
+
+        function verificarPalpite() {
+            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
+
+            const messageElement = document.getElementById('message');
+            const vetorPlayer = Array.from(palpiteAtual);
+
+            if (vetorPlayer.length !== 10) {
+                messageElement.className = "error";
+                messageElement.innerText = "Preencha as 10 casas antes de enviar!";
+                return;
+            }
+
+            messageElement.innerText = "";
+            let vetorSegredo = [...sequenciaFinal];
+            let resultadoLinha = Array(10).fill("absent");
+
+            // 1ª Passada: Verdes
+            for (let i = 0; i < 10; i++) {
+                if (vetorPlayer[i] === sequenciaFinal[i]) {
+                    resultadoLinha[i] = "correct";
+                    vetorSegredo[i] = null;
+                }
+            }
+
+            // 2ª Passada: Amarelos
+            for (let i = 0; i < 10; i++) {
+                if (resultadoLinha[i] !== "correct") {
+                    let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
+                    if (indexNoSegredo !== -1) {
+                        resultadoLinha[i] = "present";
+                        vetorSegredo[indexNoSegredo] = null;
+                    }
+                }
+            }
+
+            // Aplica os estilos na linha atual
+            for (let i = 0; i < 10; i++) {
+                const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
+                tile.innerText = vetorPlayer[i];
+                tile.classList.add(resultadoLinha[i]);
+
+                atualizarTecladoStatus(vetorPlayer[i], resultadoLinha[i]);
+            }
+
+            if (resultadoLinha.every(status => status === "correct")) {
+                messageElement.className = "success";
+                messageElement.innerText = `🎉 Genial! Você decifrou o enigma de 10 dígitos!`;
+                finalizarJogo();
+            } else {
+                tentativaAtual++;
+                document.getElementById('tentativas-txt').innerText = `Tentativas falhas: ${tentativaAtual}`;
+                
+                if (tentativaAtual >= maxTentativas) {
+                    messageElement.className = "error";
+                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join('')}`;
+                    finalizarJogo();
+                }
+            }
+
+            palpiteAtual = "";
+            atualizarDisplayCentral();
+        }
+
+        function atualizarTecladoStatus(char, status) {
+            const idx = alfabetoMatematico.indexOf(char);
+            if (idx === -1) return;
+
+            const key = document.getElementById(`key-math-${idx}`);
+            if (!key) return;
+
+            if (status === "correct") {
+                key.className = "key correct";
+            } else if (status === "present" && !key.classList.contains("correct")) {
+                key.className = "key present";
+            } else if (status === "absent" && !key.classList.contains("correct") && !key.classList.contains("present")) {
+                key.className = "key absent";
+            }
+        }
+
+        function finalizarJogo() {
+            jogoAtivo = false;
+            document.getElementById('btn-reiniciar').style.display = "block";
+            document.getElementById('btn-enviar').style.display = "none";
+        }
+
+        function reiniciarJogo() {
+            tentativaAtual = 0;
+            palpiteAtual = "";
+            jogoAtivo = true;
+            document.getElementById('message').innerText = "";
+            document.getElementById('tentativas-txt').innerText = "Tentativas falhas: 0";
+            document.getElementById('btn-reiniciar').style.display = "none";
+            document.getElementById('btn-enviar').style.display = "block";
+            
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        }
+
+        function copiarLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Link copiado!");
+            });
+        }
+
+        window.onload = () => {
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        };
+    </script>
+</body>
+</html>
