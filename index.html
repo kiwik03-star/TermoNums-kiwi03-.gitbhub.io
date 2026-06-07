@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termo de Números</title>
+    <title>Termo de Números - Edição Math Pro</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg?v=1">
 
@@ -29,7 +29,7 @@
         header {
             border-bottom: 1px solid #3a3a3c;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
             padding-bottom: 10px;
             margin-bottom: 20px;
@@ -44,7 +44,7 @@
 
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 580px;
             background-color: #1e1e1f;
             border-radius: 10px;
             padding: 20px;
@@ -52,36 +52,34 @@
             text-align: center;
         }
 
-        /* Grade de Linhas do Termo (6 tentativas) */
+        /* Grade adaptada para 10 CASAS */
         .board {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             margin-bottom: 20px;
             align-items: center;
         }
 
         .board-row {
             display: flex;
-            gap: 6px;
+            gap: 5px;
         }
 
         .tile {
-            width: 52px;
-            height: 52px;
+            width: 46px;
+            height: 46px;
             border: 2px solid #3a3a3c;
             border-radius: 4px;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-transform: uppercase;
             user-select: none;
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* Cores de feedback dos blocos */
         .tile.correct {
             background-color: #538d4e;
             border-color: #538d4e;
@@ -98,21 +96,23 @@
             color: #787c7e;
         }
 
-        /* Campo de Input Oculto e Botão de Enviar */
         .input-container {
             margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
 
         input[type="text"] {
             background-color: #121213;
             border: 2px solid #3a3a3c;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-align: center;
             padding: 8px;
-            width: 140px;
+            width: 250px;
             border-radius: 5px;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             font-weight: bold;
             outline: none;
         }
@@ -121,11 +121,21 @@
             border-color: #538d4e;
         }
 
+        .btn-action {
+            background-color: #3a3a3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         .btn-main {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 5px;
@@ -139,10 +149,10 @@
             background-color: #6aaa64;
         }
 
-        /* Teclado de Números do Lado/Baixo */
+        /* Teclado matemático estendido para símbolos complexos */
         .keyboard {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 6px;
             margin-top: 15px;
             background-color: #121213;
@@ -165,12 +175,11 @@
             transition: background-color 0.2s, opacity 0.2s;
         }
 
-        /* Estados do Teclado baseado nos erros */
         .key.correct { background-color: #538d4e !important; }
         .key.present { background-color: #b59f3b !important; }
         .key.absent { 
             background-color: #3a3a3c !important; 
-            opacity: 0.4; /* Leve transparência para indicar eliminação */
+            opacity: 0.25; /* Leve transparência para o item descartado */
             color: #787c7e;
         }
 
@@ -230,9 +239,10 @@
         <div class="board" id="game-board"></div>
 
         <div class="input-container" id="action-area">
-            <input type="text" id="player-guess" maxlength="4" placeholder="0000" autocomplete="off">
-            <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
+            <input type="text" id="player-guess" maxlength="10" placeholder="Insira 10 símbolos" autocomplete="off">
+            <button class="btn-action" onclick="apagarUltimo()">⌫</button>
         </div>
+        <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
 
         <div id="message"></div>
         <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
@@ -248,19 +258,25 @@
     </div>
 
     <script>
-        let numFinal = [];
+        let sequenciaFinal = [];
         let tentativaAtual = 0;
-        const maxTentativas = 6;
-        let jogoAtivo = true;
+        const maxTentativas = 10; // 10 CHANCES
+        let jogoAtActive = true;
 
-        // Inicializa o layout da grade
+        // O alfabeto matemático expandido com os símbolos complexos solicitados
+        const alfabetoMatematico = [
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
+            "π", "e", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω", 
+            "+", "-", "*", "/", "%", "!"
+        ];
+
         function criarTabuleiro() {
             const board = document.getElementById('game-board');
             board.innerHTML = "";
             for (let r = 0; r < maxTentativas; r++) {
                 const row = document.createElement('div');
                 row.className = 'board-row';
-                for (let c = 0; c < 4; c++) {
+                for (let c = 0; c < 10; c++) { // 10 Casas
                     const tile = document.createElement('div');
                     tile.className = 'tile';
                     tile.id = `tile-${r}-${c}`;
@@ -270,91 +286,100 @@
             }
         }
 
-        // Inicializa o teclado de 0 a 9
         function criarTeclado() {
             const keyboard = document.getElementById('numeric-keyboard');
             keyboard.innerHTML = "";
-            const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-            numeros.forEach(num => {
+            
+            alfabetoMatematico.forEach((item, index) => {
                 const key = document.createElement('button');
                 key.className = 'key';
-                key.innerText = num;
-                key.id = `key-${num}`;
+                key.innerText = item;
+                // Atribui um ID seguro limpando símbolos especiais
+                key.id = `key-math-${index}`;
                 key.onclick = () => {
                     const input = document.getElementById('player-guess');
-                    if (input.value.length < 4 && jogoAtivo) {
-                        input.value += num;
+                    if (input.value.length < 10 && jogoAtActive) {
+                        input.value += item;
                     }
                 };
                 keyboard.appendChild(key);
             });
         }
 
-        function gerarNumeroSecreto() {
-            numFinal = [];
-            for (let i = 0; i < 4; i++) {
-                numFinal.push(Math.floor(Math.random() * 10));
+        function gerarCodigoSecreto() {
+            sequenciaFinal = [];
+            for (let i = 0; i < 10; i++) {
+                const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
+                sequenciaFinal.push(caractereAleatorio);
             }
-            console.log("Segredo:", numFinal.join(""));
+            console.log("Código Secreto:", sequenciaFinal.join(""));
+        }
+
+        function apagarUltimo() {
+            const input = document.getElementById('player-guess');
+            if (jogoAtActive) {
+                input.value = input.value.slice(0, -1);
+            }
         }
 
         function verificarPalpite() {
-            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
+            if (!jogoAtActive || tentativaAtual >= maxTentativas) return;
 
             const inputElement = document.getElementById('player-guess');
-            const guessStr = inputElement.value;
+            const guessStr = inputElement.value.trim();
             const messageElement = document.getElementById('message');
 
-            if (guessStr.length !== 4 || isNaN(guessStr)) {
+            // Validação de comprimento usando Array.from para lidar corretamente com símbolos especiais
+            const vetorPlayer = Array.from(guessStr);
+
+            if (vetorPlayer.length !== 10) {
                 messageElement.className = "error";
-                messageElement.innerText = "Digite exatamente 4 números.";
+                messageElement.innerText = "A combinação precisa ter exatamente 10 símbolos.";
                 return;
             }
 
             messageElement.innerText = "";
-            let vetorPlayer = guessStr.split('').map(Number);
-            let copiaSegredo = [...numFinal];
-            let resultadoLinha = Array(4).fill("absent");
+            let vetorSegredo = [...sequenciaFinal];
+            let resultadoLinha = Array(10).fill("absent");
 
-            // Primeira passada: checa os Verdes (Corretos)
-            for (let i = 0; i < 4; i++) {
-                if (vetorPlayer[i] === numFinal[i]) {
+            // Primeira passada: Verdes (Lugar exato)
+            for (let i = 0; i < 10; i++) {
+                if (vetorPlayer[i] === sequenciaFinal[i]) {
                     resultadoLinha[i] = "correct";
-                    copiaSegredo[i] = null; 
+                    vetorSegredo[i] = null;
                 }
             }
 
-            // Segunda passada: checa os Amarelos (Presentes)
-            for (let i = 0; i < 4; i++) {
+            // Segunda passada: Amarelos (Posição incorreta)
+            for (let i = 0; i < 10; i++) {
                 if (resultadoLinha[i] !== "correct") {
-                    let indexNoSegredo = copiaSegredo.indexOf(vetorPlayer[i]);
+                    let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
                     if (indexNoSegredo !== -1) {
                         resultadoLinha[i] = "present";
-                        copiaSegredo[indexNoSegredo] = null;
+                        vetorSegredo[indexNoSegredo] = null;
                     }
                 }
             }
 
-            // Aplica a animação e cores nas caixas do tabuleiro
-            for (let i = 0; i < 4; i++) {
+            // Aplica os resultados visualmente nos blocos e no teclado
+            for (let i = 0; i < 10; i++) {
                 const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
                 tile.innerText = vetorPlayer[i];
                 tile.classList.add(resultadoLinha[i]);
 
-                // Atualiza o Teclado Dinâmico com transparência/cores
-                atualizarTeclado(vetorPlayer[i], resultadoLinha[i]);
+                atualizarTecladoSímbolo(vetorPlayer[i], resultadoLinha[i]);
             }
 
-            // Verifica Vitória ou Fim de Jogo
+            // Verifica vitória ou derrota
             if (resultadoLinha.every(status => status === "correct")) {
                 messageElement.className = "success";
-                messageElement.innerText = `🎉 Sensacional! Você acertou em ${tentativaAtual + 1} tentativas!`;
+                messageElement.innerText = `🎉 Genial! Você decifrou o enigma matemático em ${tentativaAtual + 1} tentativas!`;
                 finalizarJogo();
             } else {
                 tentativaAtual++;
                 if (tentativaAtual >= maxTentativas) {
                     messageElement.className = "error";
-                    messageElement.innerText = `💥 Fim de jogo! O número era ${numFinal.join('')}.`;
+                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join(' ')}`;
                     finalizarJogo();
                 }
             }
@@ -363,8 +388,11 @@
             inputElement.focus();
         }
 
-        function atualizarTeclado(num, status) {
-            const key = document.getElementById(`key-${num}`);
+        function atualizarTecladoSímbolo(char, status) {
+            const idx = alfabetoMatematico.indexOf(char);
+            if (idx === -1) return;
+
+            const key = document.getElementById(`key-math-${idx}`);
             if (!key) return;
 
             if (status === "correct") {
@@ -377,7 +405,7 @@
         }
 
         function finalizarJogo() {
-            jogoAtivo = false;
+            jogoAtActive = false;
             document.getElementById('btn-reiniciar').style.display = "block";
             document.getElementById('btn-enviar').style.display = "none";
             document.getElementById('player-guess').disabled = true;
@@ -385,7 +413,7 @@
 
         function reiniciarJogo() {
             tentativaAtual = 0;
-            jogoAtivo = true;
+            jogoAtActive = true;
             document.getElementById('message').innerText = "";
             document.getElementById('btn-reiniciar').style.display = "none";
             document.getElementById('btn-enviar').style.display = "block";
@@ -397,12 +425,12 @@
 
             criarTabuleiro();
             criarTeclado();
-            gerarNumeroSecreto();
+            gerarCodigoSecreto();
         }
 
         function copiarLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("Link copiado! Envie para seus amigos.");
+                alert("Link copiado! Desafie seus amigos nerds.");
             });
         }
 
@@ -413,7 +441,7 @@
         window.onload = () => {
             criarTabuleiro();
             criarTeclado();
-            gerarNumeroSecreto();
+            gerarCodigoSecreto();
         };
     </script>
 </body>
