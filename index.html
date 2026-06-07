@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termo de Números - Edição Math</title>
+    <title>Termo de Números - Edição Math Pro</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg?v=1">
 
@@ -45,7 +45,7 @@
             text-transform: uppercase;
         }
 
-        /* BOTÃO DE DICA (FOTO) */
+        /* BOTÃO DE DICA */
         .help-btn {
             position: absolute;
             right: 10px;
@@ -85,7 +85,7 @@
             color: #b59f3b;
         }
 
-        /* HISTÓRICO DE PALPITES - AJUSTADO PARA 10 QUADRADOS */
+        /* HISTÓRICO DE PALPITES */
         .board {
             display: flex;
             flex-direction: column;
@@ -135,7 +135,6 @@
             color: #787c7e;
         }
 
-        /* SEU CAMPO DE EXIBIÇÃO CENTRAL DO PRINT (Agora com 10 espaços fixos) */
         .display-container {
             background-color: #121213;
             border: 2px solid #3a3a3c;
@@ -163,7 +162,7 @@
             cursor: pointer;
             width: 100%;
             max-width: 380px;
-            margin: 0 auto 20px auto; /* ALINHAMENTO ARRUMADO AQUI */
+            margin: 0 auto 20px auto; 
             display: block;
             transition: background-color 0.2s;
         }
@@ -172,7 +171,7 @@
             background-color: #6aaa64;
         }
 
-        /* TECLADO EXPANDIDO - EXATAMENTE 26 SÍMBOLOS MATEMÁTICOS */
+        /* TECLADO EXPANDIDO */
         .keyboard {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -200,12 +199,12 @@
 
         .key.action {
             background-color: #3a3a3c;
-            grid-column: span 2; /* Deixa o botão de apagar maior */
+            grid-column: span 2; 
         }
 
         .key.correct { background-color: #538d4e !important; }
         .key.present { background-color: #b59f3b !important; }
-        .key.repeated { background-color: #2d7dd2 !important; } /* AZUL NO TECLADO */
+        .key.repeated { background-color: #2d7dd2 !important; } 
         .key.absent { 
             background-color: #3a3a3c !important; 
             opacity: 0.3;
@@ -256,6 +255,79 @@
             border-radius: 5px;
             width: 100%;
         }
+
+        /* ----- MODAL DE COMO JOGAR (ESTILO TERMO) ----- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #1e1e1f;
+            border: 1px solid #3a3a3c;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            padding: 25px 20px;
+            position: relative;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px;
+            color: #d7dadc;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #787c7e;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ffffff;
+        }
+
+        .examples {
+            margin-top: 20px;
+            border-top: 1px solid #3a3a3c;
+            padding-top: 20px;
+        }
+
+        .example {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .example p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -287,6 +359,34 @@
         </div>
     </div>
 
+    <div id="help-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="close-btn" onclick="fecharDica()">✖</button>
+            <h2>Como jogar</h2>
+            <p>Descubra a sequência de 10 dígitos e símbolos em 8 tentativas.</p>
+            <p>Depois de cada tentativa, as peças mostram o quão perto você está da solução.</p>
+            
+            <div class="examples">
+                <div class="example">
+                    <div class="tile correct" style="min-width: 38px;">1</div>
+                    <p>Faz parte da sequência e está na posição correta.</p>
+                </div>
+                <div class="example">
+                    <div class="tile present" style="min-width: 38px;">2</div>
+                    <p>Faz parte da sequência, mas em outra posição.</p>
+                </div>
+                <div class="example">
+                    <div class="tile repeated" style="min-width: 38px;">3</div>
+                    <p>Faz parte, está em outra posição e <strong>se repete</strong> na senha!</p>
+                </div>
+                <div class="example">
+                    <div class="tile absent" style="min-width: 38px;">4</div>
+                    <p>Não faz parte da sequência.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let sequenciaFinal = [];
         let palpiteAtual = "";
@@ -294,7 +394,6 @@
         const maxTentativas = 8; 
         let jogoAtivo = true;
 
-        // O ALFABETO EXATO DE 26 CARACTERES MATEMÁTICOS COMPLEXOS
         const alfabetoMatematico = [
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
             "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω",
@@ -458,15 +557,20 @@
             }
         }
 
+        // FUNÇÕES DO MODAL (COMO JOGAR)
         function mostrarDica() {
-            let contagem = {};
-            sequenciaFinal.forEach(char => { contagem[char] = (contagem[char] || 0) + 1; });
-            let temRepetidos = Object.values(contagem).some(qtd => qtd > 1);
+            document.getElementById('help-modal').style.display = 'flex';
+        }
 
-            if (temRepetidos) {
-                alert(`💡 Dica: Existem caracteres que se repetem na sequência secreta! Fique de olho na cor azul.`);
-            } else {
-                alert(`💡 Dica: Todos os caracteres na sequência secreta são únicos!`);
+        function fecharDica() {
+            document.getElementById('help-modal').style.display = 'none';
+        }
+
+        // Fecha o modal se clicar fora da caixinha
+        window.onclick = function(event) {
+            let modal = document.getElementById('help-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
 
