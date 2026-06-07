@@ -52,26 +52,32 @@
             text-align: center;
         }
 
-        /* Grade adaptada para 10 CASAS */
+        .stats {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #b59f3b;
+        }
+
+        /* HISTÓRICO DE PALPITES - Modificado para 10 CASAS */
         .board {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             margin-bottom: 20px;
             align-items: center;
         }
 
         .board-row {
             display: flex;
-            gap: 5px;
+            gap: 6px;
         }
 
         .tile {
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             border: 2px solid #3a3a3c;
             border-radius: 4px;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -96,52 +102,35 @@
             color: #787c7e;
         }
 
-        .input-container {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        input[type="text"] {
+        /* CAMPO DE EXIBIÇÃO CENTRAL (Mantendo seu estilo do print, agora para 10 dígitos) */
+        .display-container {
             background-color: #121213;
             border: 2px solid #3a3a3c;
-            color: white;
-            font-size: 1.4rem;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 15px auto;
             text-align: center;
-            padding: 8px;
-            width: 250px;
-            border-radius: 5px;
-            letter-spacing: 2px;
-            font-weight: bold;
-            outline: none;
-        }
-
-        input[type="text"]:focus {
-            border-color: #538d4e;
-        }
-
-        .btn-action {
-            background-color: #3a3a3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
+            color: #ffffff;
+            min-height: 60px;
         }
 
         .btn-main {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 14px 20px;
+            font-size: 1.2rem;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-top: 10px;
             width: 100%;
+            max-width: 380px;
+            margin-bottom: 20px;
             transition: background-color 0.2s;
         }
 
@@ -149,7 +138,7 @@
             background-color: #6aaa64;
         }
 
-        /* Teclado matemático estendido para símbolos complexos */
+        /* TECLADO COM OS 26 CARACTERES COMPLEXOS */
         .keyboard {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -175,11 +164,15 @@
             transition: background-color 0.2s, opacity 0.2s;
         }
 
+        .key.action {
+            background-color: #3a3a3c;
+        }
+
         .key.correct { background-color: #538d4e !important; }
         .key.present { background-color: #b59f3b !important; }
         .key.absent { 
             background-color: #3a3a3c !important; 
-            opacity: 0.25; /* Leve transparência para o item descartado */
+            opacity: 0.3;
             color: #787c7e;
         }
 
@@ -236,16 +229,16 @@
     </header>
 
     <div class="container">
+        <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
+
         <div class="board" id="game-board"></div>
 
-        <div class="input-container" id="action-area">
-            <input type="text" id="player-guess" maxlength="10" placeholder="Insira 10 símbolos" autocomplete="off">
-            <button class="btn-action" onclick="apagarUltimo()">⌫</button>
-        </div>
+        <div class="display-container" id="display-palpite">__________</div>
+
         <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
+        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
 
         <div id="message"></div>
-        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
 
         <div class="keyboard" id="numeric-keyboard"></div>
 
@@ -259,14 +252,15 @@
 
     <script>
         let sequenciaFinal = [];
+        let palpiteAtual = "";
         let tentativaAtual = 0;
-        const maxTentativas = 10; // 10 CHANCES
-        let jogoAtActive = true;
+        const maxTentativas = 10; // Mais chances como você pediu
+        let jogoAtivo = true;
 
-        // O alfabeto matemático expandido com os símbolos complexos solicitados
+        // Exatamente 26 caracteres combinando números e os símbolos complexos pedidos
         const alfabetoMatematico = [
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
-            "π", "e", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω", 
+            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω", 
             "+", "-", "*", "/", "%", "!"
         ];
 
@@ -276,7 +270,7 @@
             for (let r = 0; r < maxTentativas; r++) {
                 const row = document.createElement('div');
                 row.className = 'board-row';
-                for (let c = 0; c < 10; c++) { // 10 Casas
+                for (let c = 0; c < 10; c++) {
                     const tile = document.createElement('div');
                     tile.className = 'tile';
                     tile.id = `tile-${r}-${c}`;
@@ -290,20 +284,22 @@
             const keyboard = document.getElementById('numeric-keyboard');
             keyboard.innerHTML = "";
             
+            // Renderiza as teclas do alfabeto matemático
             alfabetoMatematico.forEach((item, index) => {
                 const key = document.createElement('button');
                 key.className = 'key';
                 key.innerText = item;
-                // Atribui um ID seguro limpando símbolos especiais
                 key.id = `key-math-${index}`;
-                key.onclick = () => {
-                    const input = document.getElementById('player-guess');
-                    if (input.value.length < 10 && jogoAtActive) {
-                        input.value += item;
-                    }
-                };
+                key.onclick = () => digitarCaractere(item);
                 keyboard.appendChild(key);
             });
+
+            // Botão de apagar adicionado ao final do teclado
+            const backspaceKey = document.createElement('button');
+            backspaceKey.className = 'key action';
+            backspaceKey.innerText = "⌫";
+            backspaceKey.onclick = apagarUltimo;
+            keyboard.appendChild(backspaceKey);
         }
 
         function gerarCodigoSecreto() {
@@ -312,29 +308,39 @@
                 const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
                 sequenciaFinal.push(caractereAleatorio);
             }
-            console.log("Código Secreto:", sequenciaFinal.join(""));
+            console.log("Código Secreto para testes:", sequenciaFinal.join(""));
+        }
+
+        function digitarCaractere(char) {
+            if (!jogoAtivo || palpiteAtual.length >= 10) return;
+            palpiteAtual += char;
+            atualizarDisplayCentral();
         }
 
         function apagarUltimo() {
-            const input = document.getElementById('player-guess');
-            if (jogoAtActive) {
-                input.value = input.value.slice(0, -1);
+            if (!jogoAtivo || palpiteAtual.length === 0) return;
+            palpiteAtual = palpiteAtual.slice(0, -1);
+            atualizarDisplayCentral();
+        }
+
+        function atualizarDisplayCentral() {
+            const display = document.getElementById('display-palpite');
+            let texto = palpiteAtual;
+            while (texto.length < 10) {
+                texto += "_";
             }
+            display.innerText = texto;
         }
 
         function verificarPalpite() {
-            if (!jogoAtActive || tentativaAtual >= maxTentativas) return;
+            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
 
-            const inputElement = document.getElementById('player-guess');
-            const guessStr = inputElement.value.trim();
             const messageElement = document.getElementById('message');
-
-            // Validação de comprimento usando Array.from para lidar corretamente com símbolos especiais
-            const vetorPlayer = Array.from(guessStr);
+            const vetorPlayer = Array.from(palpiteAtual);
 
             if (vetorPlayer.length !== 10) {
                 messageElement.className = "error";
-                messageElement.innerText = "A combinação precisa ter exatamente 10 símbolos.";
+                messageElement.innerText = "Complete as 10 casas antes de enviar!";
                 return;
             }
 
@@ -342,7 +348,7 @@
             let vetorSegredo = [...sequenciaFinal];
             let resultadoLinha = Array(10).fill("absent");
 
-            // Primeira passada: Verdes (Lugar exato)
+            // Primeira passada: Corretos (Verde)
             for (let i = 0; i < 10; i++) {
                 if (vetorPlayer[i] === sequenciaFinal[i]) {
                     resultadoLinha[i] = "correct";
@@ -350,7 +356,7 @@
                 }
             }
 
-            // Segunda passada: Amarelos (Posição incorreta)
+            // Segunda passada: Errados de lugar (Amarelo)
             for (let i = 0; i < 10; i++) {
                 if (resultadoLinha[i] !== "correct") {
                     let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
@@ -361,34 +367,35 @@
                 }
             }
 
-            // Aplica os resultados visualmente nos blocos e no teclado
+            // Atualiza visualmente as caixas da linha correspondente
             for (let i = 0; i < 10; i++) {
                 const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
                 tile.innerText = vetorPlayer[i];
                 tile.classList.add(resultadoLinha[i]);
 
-                atualizarTecladoSímbolo(vetorPlayer[i], resultadoLinha[i]);
+                atualizarTecladoStatus(vetorPlayer[i], resultadoLinha[i]);
             }
 
-            // Verifica vitória ou derrota
             if (resultadoLinha.every(status => status === "correct")) {
                 messageElement.className = "success";
-                messageElement.innerText = `🎉 Genial! Você decifrou o enigma matemático em ${tentativaAtual + 1} tentativas!`;
+                messageElement.innerText = `🎉 Impressionante! Você decifrou o enigma matemático!`;
                 finalizarJogo();
             } else {
                 tentativaAtual++;
+                document.getElementById('tentativas-txt').innerText = `Tentativas falhas: ${tentativaAtual}`;
+                
                 if (tentativaAtual >= maxTentativas) {
                     messageElement.className = "error";
-                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join(' ')}`;
+                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join('')}`;
                     finalizarJogo();
                 }
             }
 
-            inputElement.value = "";
-            inputElement.focus();
+            palpiteAtual = "";
+            atualizarDisplayCentral();
         }
 
-        function atualizarTecladoSímbolo(char, status) {
+        function atualizarTecladoStatus(char, status) {
             const idx = alfabetoMatematico.indexOf(char);
             if (idx === -1) return;
 
@@ -405,42 +412,36 @@
         }
 
         function finalizarJogo() {
-            jogoAtActive = false;
+            jogoAtivo = false;
             document.getElementById('btn-reiniciar').style.display = "block";
             document.getElementById('btn-enviar').style.display = "none";
-            document.getElementById('player-guess').disabled = true;
         }
 
         function reiniciarJogo() {
             tentativaAtual = 0;
-            jogoAtActive = true;
+            palpiteAtual = "";
+            jogoAtivo = true;
             document.getElementById('message').innerText = "";
+            document.getElementById('tentativas-txt').innerText = "Tentativas falhas: 0";
             document.getElementById('btn-reiniciar').style.display = "none";
             document.getElementById('btn-enviar').style.display = "block";
             
-            const inputElement = document.getElementById('player-guess');
-            inputElement.disabled = false;
-            inputElement.value = "";
-            inputElement.focus();
-
             criarTabuleiro();
             criarTeclado();
+            atualizarDisplayCentral();
             gerarCodigoSecreto();
         }
 
         function copiarLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("Link copiado! Desafie seus amigos nerds.");
+                alert("Link copiado!");
             });
         }
-
-        document.getElementById('player-guess').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') verificarPalpite();
-        });
 
         window.onload = () => {
             criarTabuleiro();
             criarTeclado();
+            atualizarDisplayCentral();
             gerarCodigoSecreto();
         };
     </script>
