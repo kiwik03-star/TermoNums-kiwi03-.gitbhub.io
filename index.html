@@ -33,7 +33,7 @@
             max-width: 600px;
             text-align: center;
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         h1 {
@@ -41,18 +41,6 @@
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-        }
-
-        .logo-container {
-            margin-bottom: 20px;
-        }
-
-        .logo-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid #3a3a3c;
         }
 
         .container {
@@ -292,4 +280,347 @@
         }
 
         .modal-content {
-            background-color: #1e1e
+            background-color: #1e1e1f;
+            border: 1px solid #3a3a3c;
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 460px;
+            width: 90%;
+            color: #ffffff;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .modal-content h2 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-content p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            color: #dfdfdf;
+        }
+
+        .example-row {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0 15px 0;
+        }
+
+        .ex-tile {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #3a3a3c;
+            border-radius: 4px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .close-modal-btn {
+            background-color: #538d4e;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .close-modal-btn:hover {
+            background-color: #6aaa64;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Termo de Números</h1>
+    </header>
+
+    <div class="container">
+        <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
+
+        <div class="board" id="game-board"></div>
+
+        <div class="display-container" id="display-palpite">__________</div>
+
+        <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
+        <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
+
+        <div id="message"></div>
+
+        <div class="keyboard" id="numeric-keyboard"></div>
+
+        <div class="social-section">
+            <div class="social-buttons">
+                <button class="share-btn" onclick="copyingLink()">🔗 Copiar Link</button>
+                <a class="insta-btn" href="https://www.instagram.com/arthur_motaik/" target="_blank">📸 @arthur_motaik</a>
+            </div>
+        </div>
+    </div>
+
+    <button class="help-trigger" onclick="abrirAjuda()">?</button>
+
+    <div class="modal-overlay" id="help-modal" onclick="fecharAjudaExterno(event)">
+        <div class="modal-content">
+            <h2>Como Jogar</h2>
+            <p>Descubra o código matemático secreto de <strong>10 dígitos</strong> em até 8 tentativas.</p>
+            <p>A cada palpite enviado, as cores dos blocos mostram o quão perto você está do resultado:</p>
+            
+            <hr style="border-color: #3a3a3c; margin: 10px 0;">
+
+            <div class="example-row">
+                <div class="ex-tile" style="background-color: #538d4e; border-color: #538d4e;">π</div>
+                <p style="margin: 5px 0 0 10px;">O caractere faz parte do segredo e está na <strong>posição correta</strong>.</p>
+            </div>
+
+            <div class="example-row">
+                <div class="ex-tile" style="background-color: #b59f3b; border-color: #b59f3b;">8</div>
+                <p style="margin: 5px 0 0 10px;">O caractere está na senha, mas na <strong>posição incorreta</strong>.</p>
+            </div>
+
+            <div class="example-row">
+                <div class="ex-tile" style="background-color: #2b70c9; border-color: #2b70c9;">∫</div>
+                <p style="margin: 5px 0 0 10px;"><strong>Sinalizador Azul:</strong> Este caractere aparece <strong>duas ou mais vezes</strong> na sequência correta!</p>
+            </div>
+
+            <div class="example-row">
+                <div class="ex-tile" style="background-color: #3a3a3c; border-color: #3a3a3c; color: #787c7e;">4</div>
+                <p style="margin: 5px 0 0 10px;">O caractere <strong>não faz parte</strong> do segredo.</p>
+            </div>
+
+            <button class="close-modal-btn" onclick="fecharAjuda()">Entendi!</button>
+        </div>
+    </div>
+
+    <script>
+        let sequenciaFinal = [];
+        let palpiteAtual = "";
+        let tentativaAtual = 0;
+        const maxTentativas = 8; 
+        let jogoAtivo = true;
+
+        const alfabetoMatematico = [
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
+            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω",
+            "α", "β", "+", "-", "*", "/"
+        ];
+
+        function criarTabuleiro() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = "";
+            for (let r = 0; r < maxTentativas; r++) {
+                const row = document.createElement('div');
+                row.className = 'board-row';
+                for (let c = 0; c < 10; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${r}-${c}`;
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function criarTeclado() {
+            const keyboard = document.getElementById('numeric-keyboard');
+            keyboard.innerHTML = "";
+            
+            alfabetoMatematico.forEach((item, index) => {
+                const key = document.createElement('button');
+                key.className = 'key';
+                key.innerText = item;
+                key.id = `key-math-${index}`;
+                key.onclick = () => digitarCaractere(item);
+                keyboard.appendChild(key);
+            });
+
+            const backspaceKey = document.createElement('button');
+            backspaceKey.className = 'key action';
+            backspaceKey.innerText = "⌫";
+            backspaceKey.onclick = apagarUltimo;
+            keyboard.appendChild(backspaceKey);
+        }
+
+        function gerarCodigoSecreto() {
+            sequenciaFinal = [];
+            for (let i = 0; i < 10; i++) {
+                const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
+                sequenciaFinal.push(caractereAleatorio);
+            }
+            console.log("Código Secreto:", sequenciaFinal.join(""));
+        }
+
+        function digitarCaractere(char) {
+            if (!jogoAtivo || palpiteAtual.length >= 10) return;
+            palpiteAtual += char;
+            atualizarDisplayCentral();
+        }
+
+        function apagarUltimo() {
+            if (!jogoAtivo || palpiteAtual.length === 0) return;
+            palpiteAtual = palpiteAtual.slice(0, -1);
+            atualizarDisplayCentral();
+        }
+
+        function atualizarDisplayCentral() {
+            const display = document.getElementById('display-palpite');
+            let texto = palpiteAtual;
+            while (texto.length < 10) {
+                texto += "_";
+            }
+            display.innerText = texto;
+        }
+
+        function contarOcorrencias(array, item) {
+            return array.filter(x => x === item).length;
+        }
+
+        function verificarPalpite() {
+            if (!jogoAtivo || tentativaAtual >= maxTentativas) return;
+
+            const messageElement = document.getElementById('message');
+            const vetorPlayer = Array.from(palpiteAtual);
+
+            if (vetorPlayer.length !== 10) {
+                messageElement.className = "error";
+                messageElement.innerText = "Preencha as 10 casas antes de enviar!";
+                return;
+            }
+
+            messageElement.innerText = "";
+            let vetorSegredo = [...sequenciaFinal];
+            let resultadoLinha = Array(10).fill("absent");
+
+            for (let i = 0; i < 10; i++) {
+                if (vetorPlayer[i] === sequenciaFinal[i]) {
+                    resultadoLinha[i] = "correct";
+                    vetorSegredo[i] = null; 
+                }
+            }
+
+            for (let i = 0; i < 10; i++) {
+                if (resultadoLinha[i] !== "correct") {
+                    let charAtual = vetorPlayer[i];
+                    let indexNoSegredo = vetorSegredo.indexOf(charAtual);
+                    
+                    if (indexNoSegredo !== -1) {
+                        let totalNoSegredo = contarOcorrencias(sequenciaFinal, charAtual);
+                        let totalNoPalpite = contarOcorrencias(vetorPlayer, charAtual);
+
+                        if (totalNoSegredo > 1 && totalNoPalpite < totalNoSegredo) {
+                            resultadoLinha[i] = "repeated"; 
+                        } else {
+                            resultadoLinha[i] = "present"; 
+                        }
+                        vetorSegredo[indexNoSegredo] = null; 
+                    }
+                }
+            }
+
+            for (let i = 0; i < 10; i++) {
+                const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
+                tile.innerText = vetorPlayer[i];
+                tile.className = `tile ${resultadoLinha[i]}`;
+
+                atualizarTecladoStatus(vetorPlayer[i], resultadoLinha[i]);
+            }
+
+            if (resultadoLinha.every(status => status === "correct")) {
+                messageElement.className = "success";
+                messageElement.innerText = `🎉 Genial! Você decifrou o enigma matemático!`;
+                finalizarJogo();
+            } else {
+                tentativaAtual++;
+                document.getElementById('tentativas-txt').innerText = `Tentativas falhas: ${tentativaAtual}`;
+                
+                if (tentativaAtual >= maxTentativas) {
+                    messageElement.className = "error";
+                    messageElement.innerText = `💥 Fim de jogo! A sequência era: ${sequenciaFinal.join('')}`;
+                    finalizarJogo();
+                }
+            }
+
+            palpiteAtual = "";
+            atualizarDisplayCentral();
+        }
+
+        function atualizarTecladoStatus(char, status) {
+            const idx = alfabetoMatematico.indexOf(char);
+            if (idx === -1) return;
+
+            const key = document.getElementById(`key-math-${idx}`);
+            if (!key) return;
+
+            if (status === "correct") {
+                key.className = "key correct";
+            } else if (status === "repeated" && !key.classList.contains("correct")) {
+                key.className = "key repeated";
+            } else if (status === "present" && !key.classList.contains("correct") && !key.classList.contains("repeated")) {
+                key.className = "key present";
+            } else if (status === "absent" && !key.classList.contains("correct") && !key.classList.contains("present") && !key.classList.contains("repeated")) {
+                key.className = "key absent";
+            }
+        }
+
+        function finalizarJogo() {
+            jogoAtivo = false;
+            document.getElementById('btn-reiniciar').style.display = "block";
+            document.getElementById('btn-enviar').style.display = "none";
+        }
+
+        function reiniciarJogo() {
+            tentativaAtual = 0;
+            palpiteAtual = "";
+            jogoAtivo = true;
+            document.getElementById('message').innerText = "";
+            document.getElementById('tentativas-txt').innerText = "Tentativas falhas: 0";
+            document.getElementById('btn-reiniciar').style.display = "none";
+            document.getElementById('btn-enviar').style.display = "block";
+            
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        }
+
+        function copyingLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Link copiado!");
+            });
+        }
+
+        function abrirAjuda() {
+            document.getElementById('help-modal').classList.add('active');
+        }
+
+        function fecharAjuda() {
+            document.getElementById('help-modal').classList.remove('active');
+        }
+
+        function fecharAjudaExterno(e) {
+            if (e.target.id === "help-modal") {
+                fecharAjuda();
+            }
+        }
+
+        window.onload = () => {
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        };
+    </script>
+</body>
+</html>
