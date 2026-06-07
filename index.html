@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Termo de Números - Edição Math Pro</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg?v=1">
@@ -13,7 +13,6 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent; /* Remove o flash azul ao clicar no mobile */
         }
 
         body {
@@ -22,42 +21,41 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Melhor para scroll no mobile se necessário */
+            justify-content: center;
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
         }
 
         header {
             border-bottom: 1px solid #3a3a3c;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 0;
-            margin-bottom: 15px;
-            position: relative;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            position: relative; /* Para o botão de interrogação ficar no canto */
         }
 
         h1 {
-            font-size: 1.6rem; /* Reduzido para caber em telas finas */
+            font-size: 2.3rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            text-align: center;
         }
 
         /* BOTÃO DE DICA */
         .help-btn {
             position: absolute;
-            right: 5px;
+            right: 10px;
             background: none;
             border: 2px solid #787c7e;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             color: #787c7e;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -73,58 +71,46 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 580px;
             background-color: #1e1e1f;
             border-radius: 10px;
-            padding: 15px 10px;
+            padding: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             text-align: center;
-            display: flex;
-            flex-direction: column;
         }
 
         .stats {
-            font-size: 1rem;
-            margin-bottom: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
             color: #b59f3b;
         }
 
-        /* HISTÓRICO DE PALPITES - OTIMIZADO PARA 10 CASAS */
+        /* HISTÓRICO DE PALPITES */
         .board {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            margin-bottom: 15px;
+            gap: 6px;
+            margin-bottom: 20px;
             align-items: center;
-            width: 100%;
-            overflow-x: auto; /* Garante que não quebre se a tela for extremamente pequena */
         }
 
         .board-row {
             display: flex;
-            gap: 4px;
-            width: 100%;
-            justify-content: center;
+            gap: 5px;
         }
 
         .tile {
-            /* Usa equações flexíveis para os 10 quadrados caberem lado a lado no celular */
-            width: calc((100% / 10) - 4px); 
-            max-width: 38px;
-            aspect-ratio: 1 / 1; /* Mantém sempre quadrado perfeito */
+            width: 38px;
+            height: 38px;
             border: 2px solid #3a3a3c;
             border-radius: 4px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             user-select: none;
             transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        @media (max-width: 360px) {
-            .tile { font-size: 0.9rem; } /* Diminui a fonte em celulares muito pequenos */
         }
 
         .tile.correct {
@@ -137,6 +123,7 @@
             border-color: #b59f3b;
         }
 
+        /* COR AZUL PARA REPETIDOS */
         .tile.repeated {
             background-color: #2d7dd2;
             border-color: #2d7dd2;
@@ -152,28 +139,30 @@
             background-color: #121213;
             border: 2px solid #3a3a3c;
             border-radius: 6px;
-            padding: 10px;
-            font-size: 1.3rem;
+            padding: 12px;
+            font-size: 1.6rem;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             width: 100%;
-            margin: 0 auto 12px auto;
+            max-width: 380px;
+            margin: 0 auto 15px auto;
             text-align: center;
             color: #ffffff;
-            min-height: 48px;
+            min-height: 55px;
         }
 
         .btn-main {
             background-color: #538d4e;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1.1rem;
+            padding: 14px 20px;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            margin: 0 auto 15px auto; 
+            max-width: 380px;
+            margin: 0 auto 20px auto; 
             display: block;
             transition: background-color 0.2s;
         }
@@ -182,14 +171,14 @@
             background-color: #6aaa64;
         }
 
-        /* TECLADO EXPANDIDO RESPONSIVO */
+        /* TECLADO EXPANDIDO */
         .keyboard {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); /* Aumentado para 7 colunas para distribuir melhor no mobile */
-            gap: 5px;
-            margin-top: 10px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin-top: 15px;
             background-color: #121213;
-            padding: 8px;
+            padding: 12px;
             border-radius: 6px;
         }
 
@@ -198,8 +187,8 @@
             color: white;
             border: none;
             border-radius: 4px;
-            height: 42px;
-            font-size: 1rem;
+            height: 45px;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -210,7 +199,7 @@
 
         .key.action {
             background-color: #3a3a3c;
-            grid-column: span 2; /* Ocupa duas colunas para o botão apagar */
+            grid-column: span 2; 
         }
 
         .key.correct { background-color: #538d4e !important; }
@@ -218,24 +207,24 @@
         .key.repeated { background-color: #2d7dd2 !important; } 
         .key.absent { 
             background-color: #3a3a3c !important; 
-            opacity: 0.4;
+            opacity: 0.3;
             color: #787c7e;
         }
 
         #message {
-            margin: 10px 0;
-            font-size: 1rem;
+            margin: 15px 0;
+            font-size: 1.1rem;
             font-weight: 600;
-            min-height: 22px;
+            min-height: 25px;
         }
 
         .success { color: #538d4e; }
         .error { color: #e74c3c; }
 
         .social-section {
-            margin-top: 15px;
+            margin-top: 20px;
             border-top: 1px solid #3a3a3c;
-            padding-top: 12px;
+            padding-top: 15px;
         }
 
         .social-buttons {
@@ -244,7 +233,7 @@
             justify-content: space-between;
         }
 
-        .share-btn, .insta-btn {
+        .share-btn {
             background-color: #3a3a3c;
             color: white;
             border: none;
@@ -253,8 +242,6 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            font-size: 0.9rem;
-            text-align: center;
         }
 
         .insta-btn {
@@ -263,83 +250,181 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            width: 100%;
         }
 
-        /* ----- MODAL AJUSTADO PARA CELULAR ----- */
+        /* ----- MODAL DE COMO JOGAR (ESTILO TERMO) ----- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            padding: 15px;
         }
 
         .modal-content {
             background-color: #1e1e1f;
             border: 1px solid #3a3a3c;
             border-radius: 8px;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
-            padding: 20px 15px;
+            padding: 25px 20px;
             position: relative;
             text-align: left;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            max-height: 90vh;
-            overflow-y: auto; /* Permite rolar as regras se a tela for muito baixa */
         }
 
         .modal-content h2 {
-            margin-bottom: 12px;
-            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-align: center;
         }
 
         .modal-content p {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: #d7dadc;
-            font-size: 0.9rem;
+            font-size: 1rem;
             line-height: 1.4;
         }
 
         .close-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
             color: #787c7e;
             font-size: 1.2rem;
             cursor: pointer;
             font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ffffff;
         }
 
         .examples {
-            margin-top: 15px;
+            margin-top: 20px;
             border-top: 1px solid #3a3a3c;
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
         .example {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .example .tile {
-            width: 34px;
-            height: 34px;
-            min-width: 34px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .example p {
             margin-bottom: 0;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
+        }
+
+        /* ==========================================================================
+           ⚠️ SEÇÃO ADICIONADA: REGRAS DE RESPONSIVIDADE PARA CELULARES (MOBILE)
+           ========================================================================== */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                justify-content: flex-start; /* Evita que o conteúdo suma no topo em telas muito curtas */
+            }
+
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 5px;
+            }
+
+            h1 {
+                font-size: 1.6rem; /* Reduz o título para não amassar o botão de ajuda */
+                letter-spacing: 1px;
+            }
+
+            .help-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 1rem;
+                right: 5px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .stats {
+                font-size: 0.95rem;
+                margin-bottom: 10px;
+            }
+
+            /* Redimensionamento inteligente do tabuleiro de 10 colunas */
+            .board {
+                gap: 4px;
+                margin-bottom: 15px;
+            }
+
+            .board-row {
+                gap: 3px;
+            }
+
+            .tile {
+                width: 28px;  /* Reduzido de 38px para caber perfeitamente em telas de 320px+ */
+                height: 38px; /* Mantém um formato levemente retangular elegante */
+                font-size: 1rem;
+                border-width: 1px;
+            }
+
+            .display-container {
+                font-size: 1.3rem;
+                padding: 8px;
+                min-height: 42px;
+                margin-bottom: 12px;
+                letter-spacing: 2px;
+            }
+
+            .btn-main {
+                padding: 12px 15px;
+                font-size: 1.05rem;
+                margin-bottom: 15px;
+            }
+
+            /* Reajuste do teclado para os dedos no mobile */
+            .keyboard {
+                gap: 4px;
+                padding: 8px;
+                margin-top: 10px;
+            }
+
+            .key {
+                height: 40px;
+                font-size: 0.95rem;
+            }
+            
+            .modal-content {
+                padding: 20px 15px;
+                width: 95%;
+            }
+            
+            .modal-content h2 {
+                font-size: 1.3rem;
+            }
+            
+            .modal-content p {
+                font-size: 0.85rem;
+                margin-bottom: 10px;
+            }
+            
+            .example {
+                gap: 10px;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -381,19 +466,19 @@
             
             <div class="examples">
                 <div class="example">
-                    <div class="tile correct">1</div>
+                    <div class="tile correct" style="min-width: 28px;">1</div>
                     <p>Faz parte da sequência e está na posição correta.</p>
                 </div>
                 <div class="example">
-                    <div class="tile present">2</div>
+                    <div class="tile present" style="min-width: 28px;">2</div>
                     <p>Faz parte da sequência, mas em outra posição.</p>
                 </div>
                 <div class="example">
-                    <div class="tile repeated">3</div>
+                    <div class="tile repeated" style="min-width: 28px;">3</div>
                     <p>Faz parte, está em outra posição e <strong>se repete</strong> na senha!</p>
                 </div>
                 <div class="example">
-                    <div class="tile absent">4</div>
+                    <div class="tile absent" style="min-width: 28px;">4</div>
                     <p>Não faz parte da sequência.</p>
                 </div>
             </div>
@@ -495,11 +580,13 @@
             let vetorSegredo = [...sequenciaFinal];
             let resultadoLinha = Array(10).fill("absent");
 
+            // CONTAGEM PARA SABER SE É REPETIDO (AZUL)
             let contagemSegredo = {};
             sequenciaFinal.forEach(char => {
                 contagemSegredo[char] = (contagemSegredo[char] || 0) + 1;
             });
 
+            // 1ª Passada: Verdes
             for (let i = 0; i < 10; i++) {
                 if (vetorPlayer[i] === sequenciaFinal[i]) {
                     resultadoLinha[i] = "correct";
@@ -507,20 +594,22 @@
                 }
             }
 
+            // 2ª Passada: Amarelos e Azuis
             for (let i = 0; i < 10; i++) {
                 if (resultadoLinha[i] !== "correct") {
                     let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
                     if (indexNoSegredo !== -1) {
                         if (contagemSegredo[vetorPlayer[i]] > 1) {
-                            resultadoLinha[i] = "repeated";
+                            resultadoLinha[i] = "repeated"; // AZUL
                         } else {
-                            resultadoLinha[i] = "present";
+                            resultadoLinha[i] = "present"; // AMARELO
                         }
                         vetorSegredo[indexNoSegredo] = null;
                     }
                 }
             }
 
+            // Aplica os estilos na linha atual
             for (let i = 0; i < 10; i++) {
                 const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
                 tile.innerText = vetorPlayer[i];
@@ -531,7 +620,7 @@
 
             if (resultadoLinha.every(status => status === "correct")) {
                 messageElement.className = "success";
-                messageElement.innerText = `🎉 Genial! Você decifrou o enigma!`;
+                messageElement.innerText = `🎉 Genial! Você decifrou o enigma de 10 dígitos!`;
                 finalizarJogo();
             } else {
                 tentativaAtual++;
@@ -561,4 +650,61 @@
                 key.className = "key repeated";
             } else if (status === "present" && !key.classList.contains("correct") && !key.classList.contains("repeated")) {
                 key.className = "key present";
-            } else if (status === "absent" && !key.classList.contains("correct") &&
+            } else if (status === "absent" && !key.classList.contains("correct") && !key.classList.contains("present") && !key.classList.contains("repeated")) {
+                key.className = "key absent";
+            }
+        }
+
+        // FUNÇÕES DO MODAL (COMO JOGAR)
+        function mostrarDica() {
+            document.getElementById('help-modal').style.display = 'flex';
+        }
+
+        function fecharDica() {
+            document.getElementById('help-modal').style.display = 'none';
+        }
+
+        // Fecha o modal se clicar fora da caixinha
+        window.onclick = function(event) {
+            let modal = document.getElementById('help-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function finalizarJogo() {
+            jogoAtivo = false;
+            document.getElementById('btn-reiniciar').style.display = "block";
+            document.getElementById('btn-enviar').style.display = "none";
+        }
+
+        function reiniciarJogo() {
+            tentativaAtual = 0;
+            palpiteAtual = "";
+            jogoAtivo = true;
+            document.getElementById('message').innerText = "";
+            document.getElementById('tentativas-txt').innerText = "Tentativas falhas: 0";
+            document.getElementById('btn-reiniciar').style.display = "none";
+            document.getElementById('btn-enviar').style.display = "block";
+            
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        }
+
+        function copiarLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Link copiado!");
+            });
+        }
+
+        window.onload = () => {
+            criarTabuleiro();
+            criarTeclado();
+            atualizarDisplayCentral();
+            gerarCodigoSecreto();
+        };
+    </script>
+</body>
+</html>
