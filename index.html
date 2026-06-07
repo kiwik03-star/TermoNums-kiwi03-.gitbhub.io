@@ -42,6 +42,18 @@
             text-transform: uppercase;
         }
 
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #3a3a3c;
+        }
+
         .container {
             width: 100%;
             max-width: 580px;
@@ -58,7 +70,7 @@
             color: #b59f3b;
         }
 
-        /* HISTÓRICO DE PALPITES - Modificado para 10 CASAS */
+        /* HISTÓRICO DE PALPITES - AJUSTADO PARA 10 QUADRADOS */
         .board {
             display: flex;
             flex-direction: column;
@@ -69,15 +81,15 @@
 
         .board-row {
             display: flex;
-            gap: 6px;
+            gap: 5px;
         }
 
         .tile {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border: 2px solid #3a3a3c;
             border-radius: 4px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -102,21 +114,21 @@
             color: #787c7e;
         }
 
-        /* CAMPO DE EXIBIÇÃO CENTRAL (Mantendo seu estilo do print, agora para 10 dígitos) */
+        /* SEU CAMPO DE EXIBIÇÃO CENTRAL DO PRINT (Agora com 10 espaços fixos) */
         .display-container {
             background-color: #121213;
             border: 2px solid #3a3a3c;
             border-radius: 6px;
             padding: 12px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             width: 100%;
             max-width: 380px;
             margin: 0 auto 15px auto;
             text-align: center;
             color: #ffffff;
-            min-height: 60px;
+            min-height: 55px;
         }
 
         .btn-main {
@@ -138,7 +150,7 @@
             background-color: #6aaa64;
         }
 
-        /* TECLADO COM OS 26 CARACTERES COMPLEXOS */
+        /* TECLADO EXPANDIDO - EXATAMENTE 26 SÍMBOLOS MATEMÁTICOS */
         .keyboard {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -166,6 +178,7 @@
 
         .key.action {
             background-color: #3a3a3c;
+            grid-column: span 2; /* Deixa o botão de apagar maior */
         }
 
         .key.correct { background-color: #538d4e !important; }
@@ -228,6 +241,10 @@
         <h1>Termo de Números</h1>
     </header>
 
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo Termo de Números" class="logo-img" onerror="this.style.display='none'">
+    </div>
+
     <div class="container">
         <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
 
@@ -254,14 +271,14 @@
         let sequenciaFinal = [];
         let palpiteAtual = "";
         let tentativaAtual = 0;
-        const maxTentativas = 10; // Mais chances como você pediu
+        const maxTentativas = 8; 
         let jogoAtivo = true;
 
-        // Exatamente 26 caracteres combinando números e os símbolos complexos pedidos
+        // O ALFABETO EXATO DE 26 CARACTERES MATEMÁTICOS COMPLEXOS
         const alfabetoMatematico = [
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", 
-            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω", 
-            "+", "-", "*", "/", "%", "!"
+            "e", "π", "∫", "Σ", "√", "∞", "Δ", "μ", "λ", "Ω",
+            "α", "β", "+", "-", "*", "/"
         ];
 
         function criarTabuleiro() {
@@ -284,7 +301,6 @@
             const keyboard = document.getElementById('numeric-keyboard');
             keyboard.innerHTML = "";
             
-            // Renderiza as teclas do alfabeto matemático
             alfabetoMatematico.forEach((item, index) => {
                 const key = document.createElement('button');
                 key.className = 'key';
@@ -294,7 +310,7 @@
                 keyboard.appendChild(key);
             });
 
-            // Botão de apagar adicionado ao final do teclado
+            // Botão de apagar ocupando espaço duplo para alinhar o grid
             const backspaceKey = document.createElement('button');
             backspaceKey.className = 'key action';
             backspaceKey.innerText = "⌫";
@@ -308,7 +324,7 @@
                 const caractereAleatorio = alfabetoMatematico[Math.floor(Math.random() * alfabetoMatematico.length)];
                 sequenciaFinal.push(caractereAleatorio);
             }
-            console.log("Código Secreto para testes:", sequenciaFinal.join(""));
+            console.log("Código Secreto:", sequenciaFinal.join(""));
         }
 
         function digitarCaractere(char) {
@@ -340,7 +356,7 @@
 
             if (vetorPlayer.length !== 10) {
                 messageElement.className = "error";
-                messageElement.innerText = "Complete as 10 casas antes de enviar!";
+                messageElement.innerText = "Preencha as 10 casas antes de enviar!";
                 return;
             }
 
@@ -348,7 +364,7 @@
             let vetorSegredo = [...sequenciaFinal];
             let resultadoLinha = Array(10).fill("absent");
 
-            // Primeira passada: Corretos (Verde)
+            // 1ª Passada: Verdes
             for (let i = 0; i < 10; i++) {
                 if (vetorPlayer[i] === sequenciaFinal[i]) {
                     resultadoLinha[i] = "correct";
@@ -356,7 +372,7 @@
                 }
             }
 
-            // Segunda passada: Errados de lugar (Amarelo)
+            // 2ª Passada: Amarelos
             for (let i = 0; i < 10; i++) {
                 if (resultadoLinha[i] !== "correct") {
                     let indexNoSegredo = vetorSegredo.indexOf(vetorPlayer[i]);
@@ -367,7 +383,7 @@
                 }
             }
 
-            // Atualiza visualmente as caixas da linha correspondente
+            // Aplica os estilos na linha atual
             for (let i = 0; i < 10; i++) {
                 const tile = document.getElementById(`tile-${tentativaAtual}-${i}`);
                 tile.innerText = vetorPlayer[i];
@@ -378,7 +394,7 @@
 
             if (resultadoLinha.every(status => status === "correct")) {
                 messageElement.className = "success";
-                messageElement.innerText = `🎉 Impressionante! Você decifrou o enigma matemático!`;
+                messageElement.innerText = `🎉 Genial! Você decifrou o enigma de 10 dígitos!`;
                 finalizarJogo();
             } else {
                 tentativaAtual++;
