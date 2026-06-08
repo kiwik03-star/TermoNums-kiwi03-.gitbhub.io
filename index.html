@@ -22,7 +22,7 @@
             --border-color: #3a3a3c;
             --bg-display: #121213;
 
-            /* Cores Padrão (Verde e Laranja original do seu código) */
+            /* Cores Padrão */
             --color-correct: #33a02c;
             --color-present: #f5793a;
             --color-repeated: #85a9ff;
@@ -37,11 +37,11 @@
             --bg-display: #f4f5f6;
         }
 
-        /* PALETA DE ALTO CONTRASTE (Ativada dinamicamente) */
+        /* PALETA DE ALTO CONTRASTE */
         body.high-contrast {
-            --color-correct: #85c1e9;  /* Azul Celeste */
-            --color-present: #f39c12;  /* Laranja Forte */
-            --color-repeated: #b46bfa; /* Roxo/Lilás para repetidos se destacar */
+            --color-correct: #85c1e9;  
+            --color-present: #f39c12;  
+            --color-repeated: #b46bfa; 
         }
 
         body {
@@ -56,7 +56,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* NAVEGAÇÃO DE MODOS (ESTILO TERMO) */
         .mode-nav {
             display: flex;
             gap: 20px;
@@ -81,7 +80,7 @@
 
         .mode-btn.active {
             color: var(--text-main);
-            border-bottom: 3px solid #f5793a; /* Alto contraste na borda ativa */
+            border-bottom: 3px solid #f5793a;
         }
 
         header {
@@ -146,7 +145,7 @@
         .stats {
             font-size: 1.1rem;
             margin-bottom: 15px;
-            color: var(--color-present); /* Segue a variável adaptativa */
+            color: var(--color-present);
         }
 
         .board {
@@ -178,7 +177,6 @@
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
 
-        /* CLASSES ATUALIZADAS PARA USAREM AS VARIÁVEIS DINÂMICAS DO TIMEOUT */
         .tile.correct { background-color: var(--color-correct) !important; border-color: var(--color-correct) !important; color: white !important; }
         .tile.present { background-color: var(--color-present) !important; border-color: var(--color-present) !important; color: white !important; }
         .tile.repeated { background-color: var(--color-repeated) !important; border-color: var(--color-repeated) !important; color: white !important; }
@@ -260,7 +258,6 @@
         .share-btn { background-color: #3a3a3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
         .insta-btn { background-color: #b63b7e; text-decoration: none; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border-radius: 5px; width: 100%; }
 
-        /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background-color: var(--bg-container); border: 1px solid var(--border-color); border-radius: 8px; width: 90%; max-width: 420px; padding: 25px 20px; position: relative; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); color: var(--text-main); }
         .modal-content h2 { margin-bottom: 20px; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
@@ -284,7 +281,6 @@
         .example { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .example p { margin-bottom: 0; font-size: 0.95rem; }
 
-        /* MOBILE RESPONSIVIDADE */
         @media (max-width: 480px) {
             body { padding: 10px; justify-content: flex-start; }
             header { margin-bottom: 15px; padding-bottom: 5px; }
@@ -325,16 +321,13 @@
 
     <div class="container">
         <div class="stats" id="tentativas-txt">Tentativas falhas: 0</div>
-
         <div class="board" id="game-board"></div>
-
         <div class="display-container" id="display-palpite">__________</div>
 
         <button id="btn-enviar" class="btn-main" onclick="verificarPalpite()">Enviar Palpite</button>
         <button id="btn-reiniciar" class="btn-main" onclick="reiniciarJogo()" style="display: none; background-color: #787c7e;">Jogar Novamente</button>
 
         <div id="message"></div>
-
         <div class="keyboard" id="numeric-keyboard"></div>
 
         <div class="social-section">
@@ -412,7 +405,7 @@
             </div>
 
             <div class="modal-footer-credits">
-                Numdle Math Edition v2.2.0<br>
+                Numdle Math Edition v2.3.0<br>
                 Inspirado no jogo original <strong>Termo</strong><br>
                 Desenvolvido com 🧠 por Arthur Mota
             </div>
@@ -444,10 +437,9 @@
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
         ];
 
-        // NOVO: Alfabeto adaptado para expressões geométricas/trigonométricas
         const alfabetoGeometry = [
             "1", "2", "3", "4", "5", "6", "9", "0",
-            "s", "e", "n", "c", "o", "t", "a", "α", "/", "√", "="
+            "s", "e", "n", "c", "o", "t", "a", "α", "b", "²", "/", "√", "="
         ];
 
         const listaEquacoesVálidas = [
@@ -463,21 +455,40 @@
             "16+16=32", "55-15=40", "7*7+1=50", "24/4+8=14", "180/3=60"
         ];
 
+        // LISTA SEQUENTION EXPANDIDA (66 Lógicas Diferentes)
         const listaSequenciasValidas = [
-            "12345", "23456", "34567", "45678", "56789",
+            // P.A. Originais e Extensões (+1 e -1)
+            "01234", "12345", "23456", "34567", "45678", "56789",
+            "98765", "87654", "76543", "65432", "54321", "43210",
+            // P.A. Alternativas (+2 e -2)
             "13579", "02468", "24680",
-            "12358", "01123", "23581",
-            "98765", "87654", "76543", "65432", "54321"
+            "97531", "86420", 
+            // Diferença Zero (Repetições puras)
+            "11111", "22222", "33333", "44444", "55555", "66666", "77777", "88888", "99999", "00000",
+            // Padrões de Oscilação
+            "12121", "23232", "34343", "45454", "56565", "67676", "78787", "89898", "90909", "01010",
+            // Fibonacci Original e Subsequências Estendidas (Base 1,2)
+            "01123", "11235", "12358", "23583", "35831", "58314", "83145", "31459", "14594", "45943", "59437", "94370", "43707", "37077", "70774",
+            // Fibonacci Diversas Bases
+            "13471", "34718", "47189", "71897",
+            "22460", "24606", "46066", "60662",
+            "55055", "50550",
+            // Sequências Matemáticas Especiais (Raízes, Primos e Potências - Modulo 10)
+            "14965", // Quadrados Mod 10: 1, 4, 9, 16(6), 25(5)
+            "23571", // Primos Mod 10: 2, 3, 5, 7, 11(1)
+            "24862", // Potências de 2 Mod 10: 2, 4, 8, 16(6), 32(2)
+            "39713"  // Potências de 3 Mod 10: 3, 9, 27(7), 81(1), 243(3)
         ];
 
-        // NOVO: Banco de dados com igualdades geométricas, trigonométricas e ângulos notáveis de tamanhos diferentes
         const listaGeometryValida = [
             "sen30=1/2", "cos60=1/2", "tan45=1", "cos0=1", "sen90=1",
-            "sen45=√2/2", "cos45=√2/2", "cos30=√3/2", "sen60=√3/2",
-            "senα/cosα=tanα"
+            "sen45=√2/2", "cos45=√2/2", "cos30=√3/2", "sen60=√3/2", 
+            "senα/cosα=tanα", "cosα*tanα=senα", "1/cosα", "1/senα", "1/tanα", 
+            "sen²α+cos²α=1", "1-sen²α=cos²α", "1-cos²α=sen²α", "sen0=cos90",
+            "a²=b²+c²", "b²+c²=a²", "a²-b²=c²", "a²-c²=b²", "sen30=cos60", "sen60=cos30",
+            "cos0=sen90", "sen45=cos45", "1/2=sen30", "1/2=cos60", "1=tan45", "0=sen0"
         ];
 
-        // VERIFICAÇÃO DE ALTO CONTRASTE SALVO NO ARRANQUE DO SITE
         window.addEventListener('DOMContentLoaded', () => {
             const salvoContrast = localStorage.getItem('altoContraste');
             if (salvoContrast === 'ativo') {
@@ -507,7 +518,6 @@
                 tamanhoSinalizacao = 5;
                 baseMaxTentativas = 6;
             } else if (modoAtual === "geometry") {
-                // NOVO: Inicialmente colocamos 8, mas ele se ajustará dinamicamente baseado na string sorteada em gerarCodigoSecreto()
                 document.getElementById("game-title").innerText = "Geometry";
                 tamanhoSinalizacao = 8;
                 baseMaxTentativas = 6;
@@ -527,7 +537,7 @@
             } else if (modoAtual === "sequention") {
                 desc.innerHTML = "<strong>O que fazer em: Sequention:</strong> Descubra a sequência de 5 dígitos. <strong>Regra:</strong> Seu palpite deve possuir um padrão matemático válido (Ex: subindo de 1 em 1 como <em>12345</em> ou Fibonacci somando o anterior como <em>12358</em>).";
             } else if (modoAtual === "geometry") {
-                desc.innerHTML = "<strong>O que fazer em: Geometry:</strong> Descubra a relação trigonométrica ou identidade geométrica oculta. Use funções (sen, cos, tan), ângulos, frações e variáveis como α (alpha). <br><em>Exemplo válido: sen30=1/2</em>";
+                desc.innerHTML = "<strong>O que fazer em: Geometry:</strong> Descubra a relação trigonométrica ou identidade geométrica oculta. Use funções (sen, cos, tan), ângulos, frações, Pitágoras (a², b²) e variáveis como α (alpha). <br><em>Exemplo válido: sen30=1/2 ou a²=b²+c²</em>";
             }
         }
 
@@ -561,7 +571,6 @@
             if (modoAtual === "sequention") alfabetoContexto = alfabetoSequention;
             if (modoAtual === "geometry") alfabetoContexto = alfabetoGeometry;
 
-            // Altera dinamicamente as colunas do teclado se estiver no modo geometry para caber melhor os botões das letras
             if (modoAtual === "geometry") {
                 keyboard.style.gridTemplateColumns = "repeat(7, 1fr)";
             } else {
@@ -581,12 +590,7 @@
             backspaceKey.className = 'key action';
             backspaceKey.innerText = "⌫";
             backspaceKey.onclick = apagarUltimo;
-            // Se for geometry, ocupa duas colunas do grid de 7 para alinhar
-            if (modoAtual === "geometry") {
-                backspaceKey.style.gridColumn = "span 2";
-            } else {
-                backspaceKey.style.gridColumn = "span 2";
-            }
+            backspaceKey.style.gridColumn = "span 2";
             keyboard.appendChild(backspaceKey);
         }
 
@@ -604,12 +608,9 @@
                 const sequenciaSorteada = listaSequenciasValidas[Math.floor(Math.random() * listaSequenciasValidas.length)];
                 sequenciaFinal = Array.from(sequenciaSorteada);
             } else if (modoAtual === "geometry") {
-                // NOVO: Sorteia uma expressão trigonométrica e ajusta o tamanho total do tabuleiro imediatamente!
                 const expressaoSorteada = listaGeometryValida[Math.floor(Math.random() * listaGeometryValida.length)];
                 sequenciaFinal = Array.from(expressaoSorteada);
                 tamanhoSinalizacao = expressaoSorteada.length;
-
-                // Recria o tabuleiro em tempo de execução para bater com as colunas certas do segredo sorteado
                 criarTabuleiro();
             }
             console.log(`[Segredo - ${modoAtual}]:`, sequenciaFinal.join(""));
@@ -708,7 +709,6 @@
                     return;
                 }
             }
-            // NOVO: Validação do modo Geometry
             else if (modoAtual === "geometry") {
                 if (!listaGeometryValida.includes(palpiteAtual)) {
                     messageElement.className = "error";
@@ -815,7 +815,6 @@
             }
         }
 
-        // LÓGICA DO SEU FILTRO DE ALTO CONTRASTE DINÂMICO
         function alternarAltoContraste() {
             const chk = document.getElementById('contrast-toggle').checked;
             if (chk) {
@@ -857,13 +856,11 @@
             gerarCodigoSecreto();
         }
 
-        // Dummy placeholders para as funções que seu código chamava mas não tinham escopo anexado no html enviado
         function copiarLink() {
             navigator.clipboard.writeText(window.location.href);
             alert("Link copiado para a área de transferência!");
         }
 
-        // Inicializa o primeiro tabuleiro ao abrir
         criarTabuleiro();
         criarTeclado();
         gerarCodigoSecreto();
